@@ -3,6 +3,9 @@ const mongodb = require("mongodb");
 const db = require("../db");
 const router = Router();
 
+
+
+
 router.get("/get_week/", (req, res, next) => {
   // console.log(req.query.module);
   db.getDb()
@@ -62,8 +65,8 @@ router.get("/get_materials/", (req, res, next) => {
       .find({ _id: { $in: contentID } })
       .toArray()
       .then((resp) => {
-        console.log(resp);
-        console.log("called");
+        // console.log(resp);
+        // console.log("called");
         res.status(200).json(resp);
       })
       .catch((er) => {
@@ -79,7 +82,7 @@ router.get("/get_module/", (req, res, next) => {
     .find({ _id:new mongodb.ObjectId(req.query.week) })
     .toArray()
     .then((resp) => {
-      console.log(resp);
+      // console.log(resp);
       res.status(200).json(resp);
     })
     .catch((er) => {
