@@ -3,51 +3,22 @@ const mongodb = require("mongodb");
 const fileUpload = require("express-fileupload");
 const db = require("../db");
 const router = Router();
-// const multer = require("multer");
-
-// const storage = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//     cb(null, "./files/");
-//   },
-//   filename: function (req, file, cb) {
-//     const date = new Date().toISOString() ;
-//     cb(null, date + file.fieldname );
-//   },
-// });
-
-// const fileFilter = (req, file, cb) => {
-//   if (file.minetype === "image/jpeg" || file.minetype === "image/png") {
-//     cb(null, true);
-//   } else {
-//     cb(null, false);
-//   }
-// };
-
-// const upload = multer({
-//   storage: storage,
-//   limits: { fileSize: 1024 * 1024 * 10 },
-//   // fileFilter:fileFilter,
-
-// });
-
-// upload.single("jobPoster"),
 
 router.use(fileUpload());
 
 router.post("/add_job", (req, res, next) => {
-  let poster = req.files.jobPoster;
-  const fileName = req.body.companyName + poster.name;
+  if (req.files) {
+    let poster = req.files.jobPoster;
+    const fileName = req.body.companyName + poster.name;
 
-  poster.mv("uploads/" + fileName, (error) => {
-    if (error) {
-      console.log(error);
-    } else {
-      const link = "http://localhost:5000/uploads/"+fileName;
-      console.log("uploaded");
-      // console.log(req.body)
+    poster.mv("uploads/" + fileName, (error) => {
+      if (error) {
+        console.log(error);
+      } else {
+        const link = "http://localhost:5000/uploads/" + fileName;
+        console.log(req.body.edit);
 
-      if (req.body.edit === true) {
-
+        if (req.body.edit === "true") {
           db.getDb()
             .db()
             .collection("Job")
@@ -67,28 +38,45 @@ router.post("/add_job", (req, res, next) => {
               console.log(res);
             })
             .catch(() => {
-              console.log("error")
+              console.log("error");
             });
-      } else {
-        db.getDb()
-          .db()
-          .collection("Job")
-          .insertOne({
-            name: req.body.name,
-            companyName: req.body.companyName,
-            jobDetails: req.body.jobDetails,
-            jobPoster: link,
-          })
-          .then((resp) => {
-            res.status(200).json(resp);
-            // console.log("added");
-          })
-          .catch((er) => {
-            console.log(er)
-          });
+        } else {
+          db.getDb()
+            .db()
+            .collection("Job")
+            .insertOne({
+              name: req.body.name,
+              companyName: req.body.companyName,
+              jobDetails: req.body.jobDetails,
+              jobPoster: link,
+            })
+            .then((resp) => {
+              res.status(200).json(resp);
+              // console.log("added");
+            })
+            .catch((er) => {
+              console.log(er);
+            });
+        }
       }
-    }
-  });
+    });
+  }
+  db.getDb()
+    .db()
+    .collection("Job")
+    .updateOne(
+      { _id: new mongodb.ObjectId(req.body._id) },
+      {
+        $set: {
+          name: req.body.name,
+          companyName: req.body.companyName,
+          jobDetails: req.body.jobDetails,
+        },
+      }
+    )
+    .then((resp) => {
+      res.status(200).json(resp);
+    });
 });
 
 router.get("/get_job/", (req, res, next) => {
@@ -98,10 +86,14 @@ router.get("/get_job/", (req, res, next) => {
     .findOne({ _id: new mongodb.ObjectId(req.query.id) })
     .then((resp) => {
       console.log(resp);
-      res.status(200).json(resp);
+      if (!resp) {
+        res.status(200).json({ error: "no jobs at the moment" });
+      } else {
+        res.status(200).json(resp);
+      }
     })
-    .catch(() => {
-      console.log("err");
+    .catch((er) => {
+      console.log(er);
     });
 });
 
@@ -112,11 +104,15 @@ router.get("/get_jobs", (req, res, next) => {
     .find()
     .toArray()
     .then((resp) => {
-      // console.log(resp);
-      res.status(200).json(resp);
+      if (!resp) {
+        res.status(200).json({ error: "no jobs at the moment" });
+      } else {
+        res.status(200).json(resp);
+      }
     })
     .catch(() => {
       console.log("err");
+      res.status(200).json({ error: "can not get jobs from database" });
     });
 });
 

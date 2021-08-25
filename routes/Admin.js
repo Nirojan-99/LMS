@@ -72,6 +72,8 @@ router.get("/get_materials/", (req, res, next) => {
       .catch((er) => {
         console.log(er);
       });
+  }else{
+    res.status(200).json({msg:"no materials"});
   }
 });
 
