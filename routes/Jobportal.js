@@ -19,6 +19,7 @@ router.post("/add_job", (req, res, next) => {
         console.log(req.body.edit);
 
         if (req.body.edit === "true") {
+          console.log("called")
           db.getDb()
             .db()
             .collection("Job")
