@@ -75,6 +75,7 @@ router.get("/get_materials/", (req, res, next) => {
 });
 
 router.get("/get_module/", (req, res, next) => {
+  console.log(req.body.week)
   db.getDb()
     .db()
     .collection("Week")
@@ -104,18 +105,123 @@ router.get("/get_material/", (req, res, next) => {
 });
 
 router.post("/update_attandance/", (req, res, next) => {
-  console.log(req.body)
+  console.log(req.body);
   db.getDb()
     .db()
     .collection("Material")
-    .updateOne({ _id: new mongodb.ObjectId(req.body._id) }, { $set: {visibility :req.body.visibility} })
+    .updateOne(
+      { _id: new mongodb.ObjectId(req.body._id) },
+      { $set: { visibility: req.body.visibility } }
+    )
     .then((res1) => {
-      console.log("called")
+      console.log("called");
       console.log(res1);
       res.status(200).json(res1);
-    }).catch((er)=>{
-      console.log(er)
     })
+    .catch((er) => {
+      console.log(er);
+    });
+});
+
+router.post("/delete_material/", (req, res, next) => {
+  console.log(req.body);
+  db.getDb()
+    .db()
+    .collection("Material")
+    .deleteOne({ _id: new mongodb.ObjectId(req.body.id) })
+    .then((res1) => {
+      db.getDb()
+        .db()
+        .collection("Week")
+        .updateOne(
+          { _id: new mongodb.ObjectId(req.body.week) },
+          { $pull: { contents: new mongodb.ObjectId(req.body.id) } }
+        )
+        .then((res2) => {
+          res.status(200).json(res2);
+        })
+        .catch((er) => {
+          console.log(er);
+          res.status(200).json({ error: "can not delete from week" });
+        });
+    })
+    .catch((er) => {
+      console.log(er);
+      res.status(200).json({ error: "can not delete from material" });
+    });
+});
+
+router.post("/add_submission/", (req, res, next) => {
+  // console.log(req.body);
+  db.getDb()
+    .db()
+    .collection("Material")
+    .insertOne({
+      title: req.body.title,
+      visibility: req.body.visibility,
+      date_time: req.body.date_time,
+      type: req.body.type,
+      deadlineDate: req.body.deadlineDate,
+      deadlineTime: req.body.deadlineTime,
+      maxSize: req.body.maxSize,
+    })
+    .then((res1) => {
+      const materialID = res1.insertedId;
+      db.getDb()
+        .db()
+        .collection("Week")
+        .updateOne(
+          {
+            _id: mongodb.ObjectId(req.body.week),
+          },
+          { $push: { contents: materialID } }
+        )
+        .then((resp) => {
+          // console.log(res);
+          res.status(200).json(resp);
+        })
+        .catch();
+    })
+    .catch(() => {});
+});
+
+router.post("/edit_submission/", (req, res, next) => {
+  // console.log(req.body);
+  db.getDb()
+    .db()
+    .collection("Material")
+    .updateOne({_id:new mongodb.ObjectId(req.body._id)},{$set:{
+      title: req.body.title,
+      visibility: req.body.visibility,
+      date_time: req.body.date_time,
+      type: req.body.type,
+      deadlineDate: req.body.deadlineDate,
+      deadlineTime: req.body.deadlineTime,
+      maxSize: req.body.maxSize,
+    }})
+    .then((res1) => {
+      res.status(200).json(res1);
+    })
+    .catch(() => {});
+});
+
+
+router.post("/edit_link/", (req, res, next) => {
+  // console.log(req.body);
+  db.getDb()
+    .db()
+    .collection("Material")
+    .updateOne({_id:new mongodb.ObjectId(req.body._id)},{$set:{
+      title: req.body.title,
+      visibility: req.body.visibility,
+      date_time: req.body.date_time,
+      type: req.body.type,
+      link: req.body.link,
+    }})
+    .then((res1) => {
+      res.status(200).json(res1);
+    })
+    .catch(() => {});
 });
 
 module.exports = router;
