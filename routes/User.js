@@ -9,7 +9,7 @@ router.post("/login", (req, res, next) => {
     .collection("User")
     .findOne({
       email: req.body.email,
-      passward: req.body.password,
+      password: req.body.password,
     })
     .then((resp) => {
       if (resp) {
@@ -44,7 +44,6 @@ router.post("/check_mail", (req, res, next) => {
 });
 
 router.post("/check_otp", (req, res, next) => {
-  console.log("called");
   db.getDb()
     .db()
     .collection("OTP")
@@ -60,7 +59,6 @@ router.post("/check_otp", (req, res, next) => {
 });
 
 router.post("/add_user", (req, res, next) => {
-  console.log(req.body);
   db.getDb()
     .db()
     .collection("User")
