@@ -7,7 +7,6 @@ const fileUpload = require("express-fileupload");
 router.use(fileUpload());
 
 router.get("/get_week/", (req, res, next) => {
-  // console.log(req.query.module);
   db.getDb()
     .db()
     .collection("Week")
@@ -17,7 +16,6 @@ router.get("/get_week/", (req, res, next) => {
       res.status(200).json(resp);
     })
     .catch(() => {});
-  // console.log(req.body)
 });
 
 router.post("/add_material/", (req, res, next) => {
@@ -32,7 +30,6 @@ router.post("/add_material/", (req, res, next) => {
       link: req.body.link,
     })
     .then((res1) => {
-      // console.log(res.insertedId);
       const materialID = res1.insertedId;
       db.getDb()
         .db()
@@ -44,7 +41,6 @@ router.post("/add_material/", (req, res, next) => {
           { $push: { contents: materialID } }
         )
         .then((resp) => {
-          console.log(res);
           res.status(200).json(resp);
         })
         .catch();
@@ -65,8 +61,6 @@ router.get("/get_materials/", (req, res, next) => {
       .find({ _id: { $in: contentID } })
       .toArray()
       .then((resp) => {
-        // console.log(resp);
-        // console.log("called");
         res.status(200).json(resp);
       })
       .catch((er) => {
@@ -78,14 +72,12 @@ router.get("/get_materials/", (req, res, next) => {
 });
 
 router.get("/get_module/", (req, res, next) => {
-  console.log(req.body.week);
   db.getDb()
     .db()
     .collection("Week")
     .find({ _id: new mongodb.ObjectId(req.query.week) })
     .toArray()
     .then((resp) => {
-      // console.log(resp);
       res.status(200).json(resp);
     })
     .catch((er) => {
@@ -99,7 +91,6 @@ router.get("/get_material/", (req, res, next) => {
     .collection("Material")
     .findOne({ _id: new mongodb.ObjectId(req.query.materialID) })
     .then((resp) => {
-      // console.log(resp);
       res.status(200).json(resp);
     })
     .catch((er) => {
@@ -108,7 +99,6 @@ router.get("/get_material/", (req, res, next) => {
 });
 
 router.post("/update_attandance/", (req, res, next) => {
-  console.log(req.body);
   db.getDb()
     .db()
     .collection("Material")
@@ -117,8 +107,6 @@ router.post("/update_attandance/", (req, res, next) => {
       { $set: { visibility: req.body.visibility } }
     )
     .then((res1) => {
-      console.log("called");
-      console.log(res1);
       res.status(200).json(res1);
     })
     .catch((er) => {
@@ -127,7 +115,6 @@ router.post("/update_attandance/", (req, res, next) => {
 });
 
 router.post("/delete_material/", (req, res, next) => {
-  console.log(req.body);
   db.getDb()
     .db()
     .collection("Material")
@@ -155,7 +142,6 @@ router.post("/delete_material/", (req, res, next) => {
 });
 
 router.post("/add_submission/", (req, res, next) => {
-  // console.log(req.body);
   db.getDb()
     .db()
     .collection("Material")
@@ -180,7 +166,6 @@ router.post("/add_submission/", (req, res, next) => {
           { $push: { contents: materialID } }
         )
         .then((resp) => {
-          // console.log(res);
           res.status(200).json(resp);
         })
         .catch();
@@ -189,7 +174,6 @@ router.post("/add_submission/", (req, res, next) => {
 });
 
 router.post("/edit_submission/", (req, res, next) => {
-  // console.log(req.body);
   db.getDb()
     .db()
     .collection("Material")
@@ -214,7 +198,6 @@ router.post("/edit_submission/", (req, res, next) => {
 });
 
 router.post("/edit_link/", (req, res, next) => {
-  // console.log(req.body);
   db.getDb()
     .db()
     .collection("Material")
@@ -237,8 +220,6 @@ router.post("/edit_link/", (req, res, next) => {
 });
 
 router.post("/add_file/", (req, res, next) => {
-  // console.log(req.body);
-  // console.log(req.files);
   if (req.files) {
     let fileToUpload = req.files.file;
     const fileName = req.body.week + fileToUpload.name;
@@ -249,8 +230,6 @@ router.post("/add_file/", (req, res, next) => {
       } else {
         const link = "http://localhost:5000/files/" + fileName;
         if (req.body.edit === "true") {
-          console.log("called");
-          console.log(typeof(req.body._id));
           db.getDb()
             .db()
             .collection("Material")
@@ -267,13 +246,11 @@ router.post("/add_file/", (req, res, next) => {
             )
             .then((resp) => {
               res.status(200).json(resp);
-              console.log(res);
             })
             .catch(() => {
               console.log("error");
             });
         } else {
-          console.log("called here");
           db.getDb()
             .db()
             .collection("Material")
@@ -297,7 +274,6 @@ router.post("/add_file/", (req, res, next) => {
                   { $push: { contents: materialID } }
                 )
                 .then((resp) => {
-                  // console.log(res);
                   res.status(200).json(resp);
                 })
                 .catch();
@@ -309,7 +285,6 @@ router.post("/add_file/", (req, res, next) => {
       }
     });
   } else {
-    console.log("edit without file")
     db.getDb()
       .db()
       .collection("Material")
@@ -330,7 +305,6 @@ router.post("/add_file/", (req, res, next) => {
 });
 
 router.post("/edit_notes/", (req, res, next) => {
-  // console.log(req.body);
   db.getDb()
     .db()
     .collection("Material")
@@ -356,7 +330,6 @@ router.get("/get_material/date/", (req, res, next) => {
     .collection("Material")
     .findOne({ _id: new mongodb.ObjectId(req.query.materialID) },{date_time:1})
     .then((resp) => {
-      // console.log(resp);
       res.status(200).json(resp);
     })
     .catch((er) => {
