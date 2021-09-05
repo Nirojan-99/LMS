@@ -3,11 +3,12 @@ const cors = require('cors')
 const app = express();
 const BodyParser = require("body-parser");
 
-const moduleRoutes = require('./routes/modulePage');
 const AdminRoutes = require('./routes/Admin');
 const JobRoutes = require('./routes/Jobportal');
 const Insights = require('./routes/insights');
 const User = require('./routes/User');
+const Attandance = require('./routes/Attandance');
+
 const db = require('./db');
 
 app.use(BodyParser.urlencoded({ extended: false }));
@@ -33,6 +34,7 @@ app.use((req, res, next) => {
 
 app.use('/admin', AdminRoutes);
 app.use('/insight', Insights);
+app.use('/attandance', Attandance);
 app.use('/user', User);
 app.use('/', JobRoutes);
 

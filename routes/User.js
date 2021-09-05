@@ -9,7 +9,7 @@ router.post("/login", (req, res, next) => {
     .collection("User")
     .findOne({
       email: req.body.email,
-      passward: req.body.password,
+      password: req.body.password,
     })
     .then((resp) => {
       if (resp) {
