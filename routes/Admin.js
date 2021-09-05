@@ -350,4 +350,18 @@ router.post("/edit_notes/", (req, res, next) => {
     .catch(() => {});
 });
 
+router.get("/get_material/date/", (req, res, next) => {
+  db.getDb()
+    .db()
+    .collection("Material")
+    .findOne({ _id: new mongodb.ObjectId(req.query.materialID) },{date_time:1})
+    .then((resp) => {
+      // console.log(resp);
+      res.status(200).json(resp);
+    })
+    .catch((er) => {
+      console.log(er);
+    });
+});
+
 module.exports = router;
