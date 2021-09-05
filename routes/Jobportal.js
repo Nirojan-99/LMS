@@ -16,10 +16,7 @@ router.post("/add_job", (req, res, next) => {
         console.log(error);
       } else {
         const link = "http://localhost:5000/uploads/" + fileName;
-        console.log(req.body.edit);
-
         if (req.body.edit === "true") {
-          console.log("called")
           db.getDb()
             .db()
             .collection("Job")
@@ -61,8 +58,8 @@ router.post("/add_job", (req, res, next) => {
         }
       }
     });
-  }
-  db.getDb()
+  }else{
+    db.getDb()
     .db()
     .collection("Job")
     .updateOne(
@@ -78,6 +75,8 @@ router.post("/add_job", (req, res, next) => {
     .then((resp) => {
       res.status(200).json(resp);
     });
+  }
+  
 });
 
 router.get("/get_job/", (req, res, next) => {
