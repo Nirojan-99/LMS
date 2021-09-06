@@ -4,6 +4,7 @@ const db = require("../db");
 const router = Router();
 
 router.post("/login", (req, res, next) => {
+  console.log("aaaa")
   db.getDb()
     .db()
     .collection("User")
@@ -68,6 +69,23 @@ router.post("/add_user", (req, res, next) => {
         res.status(200).json({ valid: true, email: req.body.email });
       } else {
         res.status(200).json({ valid: false });
+      }
+    })
+    .catch(() => {});
+});
+
+router.post("/find_user",(req, res, next) => {
+  db.getDb()
+    .db()
+    .collection("User")
+    .findOne({
+      _id:new mongodb.ObjectId(req.body._id)
+    })
+    .then((resp) => {
+      if (resp) {
+        res.status(200).json(resp);
+      } else {
+        res.status(200).json({ auth: false });
       }
     })
     .catch(() => {});

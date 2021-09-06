@@ -8,6 +8,8 @@ const JobRoutes = require('./routes/Jobportal');
 const Insights = require('./routes/insights');
 const User = require('./routes/User');
 const Attandance = require('./routes/Attandance');
+const Event = require('./routes/Event');
+const HelpDesk = require('./routes/HelpDesk');
 
 const db = require('./db');
 
@@ -34,8 +36,10 @@ app.use((req, res, next) => {
 
 app.use('/admin', AdminRoutes);
 app.use('/insight', Insights);
-app.use('/attandance', Attandance);
 app.use('/user', User);
+app.use('/attandance', Attandance);
+app.use('/event', Event);
+app.use('/helpDesk', HelpDesk);
 app.use('/', JobRoutes);
 
 
