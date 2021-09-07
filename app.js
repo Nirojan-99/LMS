@@ -10,6 +10,8 @@ const User = require('./routes/User');
 const Attandance = require('./routes/Attandance');
 const Event = require('./routes/Event');
 const HelpDesk = require('./routes/HelpDesk');
+const UserManagement=require('./routes/UserManagement');
+
 
 const db = require('./db');
 
@@ -41,6 +43,7 @@ app.use('/attandance', Attandance);
 app.use('/event', Event);
 app.use('/helpDesk', HelpDesk);
 app.use('/', JobRoutes);
+app.use('/userManagement',UserManagement);
 
 
 
