@@ -10,6 +10,7 @@ const User = require('./routes/User');
 const Attandance = require('./routes/Attandance');
 const Event = require('./routes/Event');
 const HelpDesk = require('./routes/HelpDesk');
+const Announcement = require('./routes/Announcement');
 const UserManagement=require('./routes/UserManagement');
 
 
@@ -23,6 +24,7 @@ app.use(cors())
 
 app.use("/uploads" ,express.static("uploads"))
 app.use("/files" ,express.static("files"))
+app.use("/announcement" ,express.static("announcement"))
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -42,6 +44,7 @@ app.use('/user', User);
 app.use('/attandance', Attandance);
 app.use('/event', Event);
 app.use('/helpDesk', HelpDesk);
+app.use('/announcement', Announcement);
 app.use('/', JobRoutes);
 app.use('/userManagement',UserManagement);
 
