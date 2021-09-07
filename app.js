@@ -11,6 +11,8 @@ const Attandance = require('./routes/Attandance');
 const Event = require('./routes/Event');
 const HelpDesk = require('./routes/HelpDesk');
 const Announcement = require('./routes/Announcement');
+const UserManagement=require('./routes/UserManagement');
+
 
 const db = require('./db');
 
@@ -44,6 +46,7 @@ app.use('/event', Event);
 app.use('/helpDesk', HelpDesk);
 app.use('/announcement', Announcement);
 app.use('/', JobRoutes);
+app.use('/userManagement',UserManagement);
 
 
 
