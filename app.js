@@ -21,6 +21,7 @@ app.use(BodyParser.json());
 app.use(cors())
 
 app.use("/uploads" ,express.static("uploads"))
+app.use("/Dp" ,express.static("Dp"))
 app.use("/files" ,express.static("files"))
 app.use("/announcement" ,express.static("announcement"))
 

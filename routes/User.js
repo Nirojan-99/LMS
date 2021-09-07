@@ -2,9 +2,12 @@ const Router = require("express").Router;
 const mongodb = require("mongodb");
 const db = require("../db");
 const router = Router();
+const fileUpload = require("express-fileupload");
+
+router.use(fileUpload());
 
 router.post("/login", (req, res, next) => {
-  console.log("aaaa")
+  console.log("aaaa");
   db.getDb()
     .db()
     .collection("User")
@@ -74,18 +77,129 @@ router.post("/add_user", (req, res, next) => {
     .catch(() => {});
 });
 
-router.post("/find_user",(req, res, next) => {
+router.post("/find_user", (req, res, next) => {
   db.getDb()
     .db()
     .collection("User")
     .findOne({
-      _id:new mongodb.ObjectId(req.body._id)
+      _id: new mongodb.ObjectId(req.body._id),
     })
     .then((resp) => {
       if (resp) {
         res.status(200).json(resp);
       } else {
         res.status(200).json({ auth: false });
+      }
+    })
+    .catch(() => {});
+});
+
+router.get("/get_user/", (req, res, next) => {
+  db.getDb()
+    .db()
+    .collection("User")
+    .findOne({
+      _id: new mongodb.ObjectId(req.query.ID),
+    })
+    .then((resp) => {
+      if (resp) {
+        res.status(200).json(resp);
+      } else {
+        res.status(200).json({ auth: false });
+      }
+    })
+    .catch(() => {});
+});
+
+router.post("/edit_user", (req, res, next) => {
+  console.log("called");
+  db.getDb()
+    .db()
+    .collection("User")
+    .updateOne(
+      {
+        _id: new mongodb.ObjectId(req.body._id),
+      },
+      {
+        $set: {
+          name: req.body.name,
+          address: req.body.address,
+          contact: req.body.contact,
+          password: req.body.password,
+          bio: req.body.bio,
+        },
+      }
+    )
+    .then((resp) => {
+      if (resp) {
+        res.status(200).json(resp);
+      } else {
+        res.status(200).json({ ack: false });
+      }
+    })
+    .catch(() => {});
+});
+
+router.post("/add_dp", (req, res, next) => {
+  console.log("call");
+  let poster = req.files.dp;
+  const fileName = req.body._id + poster.name;
+
+  poster.mv("Dp/" + fileName, (error) => {
+    if (error) {
+      console.log(error);
+    } else {
+      const dp = "http://localhost:5000/Dp/" + fileName;
+
+      db.getDb()
+        .db()
+        .collection("User")
+        .updateOne(
+          { _id: new mongodb.ObjectId(req.body._id) },
+          {
+            $set: {
+              dp: dp,
+            },
+          }
+        )
+        .then((resp) => {
+          res.status(200).json(resp);
+          console.log(res);
+        })
+        .catch(() => {
+          console.log("error");
+        });
+    }
+  });
+});
+
+router.get("/dp/", (req, res, next) => {
+  db.getDb()
+    .db()
+    .collection("User")
+    .findOne({
+      _id: new mongodb.ObjectId(req.query.ID),
+    })
+    .then((resp) => {
+      if (resp) {
+        res.status(200).json({ dp: resp.dp, name: resp.name });
+      }
+    })
+    .catch(() => {});
+});
+
+router.delete("/delete_user/", (req, res, next) => {
+  db.getDb()
+    .db()
+    .collection("User")
+    .deleteOne({
+      _id: new mongodb.ObjectId(req.query.ID),
+    })
+    .then((resp) => {
+      if (resp) {
+        res.status(200).json({ ack: true });
+      } else {
+        res.status(200).json({ ack: false });
       }
     })
     .catch(() => {});
