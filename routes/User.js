@@ -3,11 +3,11 @@ const mongodb = require("mongodb");
 const db = require("../db");
 const router = Router();
 const fileUpload = require("express-fileupload");
+const jwt = require("jsonwebtoken");
 
 router.use(fileUpload());
 
 router.post("/login", (req, res, next) => {
-  console.log("aaaa");
   db.getDb()
     .db()
     .collection("User")
@@ -17,7 +17,19 @@ router.post("/login", (req, res, next) => {
     })
     .then((resp) => {
       if (resp) {
-        res.status(200).json({ auth: true, details: resp });
+        const token = jwt.sign(
+          { userID: resp._id, email: resp.email },
+          "lmsuservalidation",
+          { expiresIn: "1h" }
+        );
+        res
+          .status(200)
+          .json({
+            auth: true,
+            details: resp,
+            token: token,
+            tokenExpiration: 1,
+          });
       } else {
         res.status(200).json({ auth: false });
       }
@@ -200,6 +212,62 @@ router.delete("/delete_user/", (req, res, next) => {
         res.status(200).json({ ack: true });
       } else {
         res.status(200).json({ ack: false });
+      }
+    })
+    .catch(() => {});
+});
+
+router.get("/get_modules/", (req, res, next) => {
+  db.getDb()
+    .db()
+    .collection("Enroll")
+    .find(
+      {
+        students: req.query.ID,
+      },
+      { students: -1 }
+    )
+    .toArray()
+    .then((resp) => {
+      if (resp) {
+        res.status(200).json({ courses: resp });
+      }
+    })
+    .catch(() => {});
+  // db.getDb()
+  //   .db()
+  //   .collection("Enroll")
+  //   .updateOne(
+  //     { id: "it2021" },
+  //     {
+  //       $addToSet: { students:req.query.ID,name:"ITP" },
+  //     },
+  //     { upsert:true }
+  //   )
+
+  //   .then((resp) => {
+  //     if (resp) {
+  //       res.status(200).json({ courses: { resp } });
+  //     }
+  //   })
+  //   .catch(() => {});
+});
+
+router.post("/unenroll", (req, res, next) => {
+  console.log("called");
+  db.getDb()
+    .db()
+    .collection("Enroll")
+    .updateOne(
+      {
+        _id: new mongodb.ObjectId(req.body.ID),
+      },
+      { $pull: { students: req.body.student } }
+    )
+    .then((resp) => {
+      console.log(resp);
+      if (resp) {
+        res.status(200).json({});
       }
     })
     .catch(() => {});
