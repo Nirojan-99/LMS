@@ -38,22 +38,25 @@ exports.CheckMail = (req, res, next) => {
   db.getDb()
     .db()
     .collection("User")
-    .findOne({ email: req.body.email })
+    .findOne({ email: req.query.email })
     .then((resp) => {
+      const userID = resp._id;
       if (resp) {
         const OTP = Math.floor(Math.random() * 89999) + 10000;
         db.getDb()
           .db()
           .collection("OTP")
-          .insertOne({ email: req.body.email, OTP: OTP })
+          .insertOne({ userID, email: req.query.email, OTP: OTP })
           .then((resp) => {
-            res.status(200).json({ available: true });
+            res.status(200).json({ available: true, userID });
           });
       } else {
         res.status(200).json({ available: false });
       }
     })
-    .catch(() => {});
+    .catch((er) => {
+      console.log(er);
+    });
 };
 
 exports.CheckOTP = (req, res, next) => {
@@ -124,7 +127,7 @@ exports.EditUser = (req, res, next) => {
     res.status(200).json({ ack: false });
     return;
   }
-  console.log("called");
+
   db.getDb()
     .db()
     .collection("User")
@@ -288,7 +291,6 @@ exports.Unenroll = (req, res, next) => {
     res.status(200).json({ ack: false });
     return;
   }
-  console.log("called");
   db.getDb()
     .db()
     .collection("Enroll")
@@ -306,6 +308,62 @@ exports.Unenroll = (req, res, next) => {
       }
     })
     .catch(() => {
+      res.status(200).json({ ack: false });
+    });
+};
+
+exports.ResetPass = (req, res, next) => {
+  if (req.body._id.length !== 24) {
+    res.status(200).json({ ack: false });
+    return;
+  }
+  db.getDb()
+    .db()
+    .collection("User")
+    .updateOne(
+      {
+        _id: new mongodb.ObjectId(req.body._id),
+      },
+      { $set: { password: req.body.password } }
+    )
+    .then((resp) => {
+      if (resp.modifiedCount === 1) {
+        db.getDb()
+          .db()
+          .collection("OTP")
+          .deleteOne({ userID: new mongodb.ObjectId(req.body._id) })
+          .then((resp) => {
+            res.status(200).json({ ack: true });
+          })
+          .catch();
+      } else {
+        res.status(200).json({ ack: false });
+      }
+    })
+    .catch((er) => {
+      res.status(200).json({ ack: false });
+    });
+};
+
+exports.CheckValidity = (req, res, next) => {
+  if (req.query.userID.length !== 24) {
+    res.status(200).json({ ack: false });
+    return;
+  }
+  db.getDb()
+    .db()
+    .collection("OTP")
+    .findOne({
+      userID: new mongodb.ObjectId(req.query.userID),
+    })
+    .then((resp) => {
+      if (resp) {
+        res.status(200).json({ ack: true });
+      } else {
+        res.status(200).json({ ack: false });
+      }
+    })
+    .catch((er) => {
       res.status(200).json({ ack: false });
     });
 };

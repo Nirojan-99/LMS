@@ -399,3 +399,26 @@ exports.GetMDate = (req, res, next) => {
       console.log(er);
     });
 };
+
+exports.AddWeek = (req, res, next) => {
+  console.log("aaa");
+  if (req.auth === false) {
+    res.status(200).json({ auth: false });
+    return;
+  }
+  db.getDb()
+    .db()
+    .collection("Week")
+    .insertOne({ week: req.body.week, module: req.body.module, contents: [] })
+    .then((resp) => {
+      console.log(resp);
+      if (resp.insertedId) {
+        res.status(200).json({ ack: true });
+      } else {
+        res.status(200).json({ ack: false });
+      }
+    })
+    .catch((er) => {
+      res.status(200).json({ ack: false });
+    });
+};
