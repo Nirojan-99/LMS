@@ -3,10 +3,10 @@ const mongodb = require("mongodb");
 const db = require("../db");
 
 exports.GetWeek = (req, res, next) => {
-  //   if (req.auth === false) {
-  //     res.status(200).json({ auth: false });
-  //     return;
-  //   }
+    // if (req.auth === false) {
+    //   res.status(200).json({ auth: false });
+    //   return;
+    // }
   db.getDb()
     .db()
     .collection("Week")
@@ -82,6 +82,6 @@ exports.GetMaterial = (req, res, next) => {
       res.status(200).json(resp);
     })
     .catch((er) => {
-      console.log(er);
+      res.status(200).json({ fetch: false, msg: er });
     });
 };

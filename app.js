@@ -2,8 +2,9 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 const BodyParser = require("body-parser");
-const isAuth = require("./Middleware/isAuth");
 
+const db = require("./db");
+const isAuth = require("./Middleware/isAuth");
 const AdminRoutes = require("./routes/Admin");
 const JobRoutes = require("./routes/Jobportal");
 const Insights = require("./routes/insights");
@@ -14,14 +15,11 @@ const HelpDesk = require("./routes/HelpDesk");
 const Announcement = require("./routes/Announcement");
 const UserManagement = require("./routes/UserManagement");
 
-const db = require("./db");
 
 app.use(isAuth);
-
 app.use(BodyParser.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(BodyParser.json());
-
 app.use(cors());
 
 app.use("/uploads", express.static("uploads"));

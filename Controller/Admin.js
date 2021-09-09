@@ -31,25 +31,24 @@ exports.AddMaterial = (req, res, next) => {
           )
           .then((resp) => {
             if (resp.modifiedCount === 1) {
-                res.status(200).json({ inserted: true });
-            }else{
-                res.status(200).json({ inserted: false });
+              res.status(200).json({ inserted: true });
+            } else {
+              res.status(200).json({ inserted: false });
             }
           })
-          .catch(()=>{
+          .catch(() => {
             res.status(200).json({ inserted: false });
           });
-      }else{
+      } else {
         res.status(200).json({ inserted: false });
       }
     })
     .catch(() => {
-        res.status(200).json({ inserted: false });
+      res.status(200).json({ inserted: false });
     });
 };
 
 exports.UpdateAttandance = (req, res, next) => {
-  console.log("aa");
   if (req.auth === false) {
     res.status(200).json({ auth: false });
     return;
@@ -116,6 +115,10 @@ exports.DeleteMaterial = (req, res, next) => {
 };
 
 exports.AddSubmission = (req, res, next) => {
+  if (req.auth === false) {
+    res.status(200).json({ auth: false });
+    return;
+  }
   db.getDb()
     .db()
     .collection("Material")
@@ -129,25 +132,43 @@ exports.AddSubmission = (req, res, next) => {
       maxSize: req.body.maxSize,
     })
     .then((res1) => {
-      const materialID = res1.insertedId;
-      db.getDb()
-        .db()
-        .collection("Week")
-        .updateOne(
-          {
-            _id: mongodb.ObjectId(req.body.week),
-          },
-          { $push: { contents: materialID } }
-        )
-        .then((resp) => {
-          res.status(200).json(resp);
-        })
-        .catch();
+      if (res1.insertedId) {
+        const materialID = res1.insertedId;
+        db.getDb()
+          .db()
+          .collection("Week")
+          .updateOne(
+            {
+              _id: mongodb.ObjectId(req.body.week),
+            },
+            { $push: { contents: materialID } }
+          )
+          .then((resp) => {
+            if (resp.modifiedCount === 1) {
+              res.status(200).json({ updated: true });
+            } else {
+              res.status(200).json({ updated: false });
+            }
+          })
+          .catch((er) => {
+            res.status(200).json({ updated: false, msg: er });
+          });
+      }
     })
-    .catch(() => {});
+    .catch((er) => {
+      res.status(200).json({ updated: false, msg: er });
+    });
 };
 
 exports.EditSubmission = (req, res, next) => {
+  if (req.auth === false) {
+    res.status(200).json({ auth: false });
+    return;
+  }
+  if (req.body._id.length !== 24) {
+    res.status(200).json({ updated: false });
+    return;
+  }
   db.getDb()
     .db()
     .collection("Material")
@@ -166,12 +187,26 @@ exports.EditSubmission = (req, res, next) => {
       }
     )
     .then((res1) => {
-      res.status(200).json(res1);
+      if (res1.modifiedCount === 1) {
+        res.status(200).json({ updated: true });
+      } else {
+        res.status(200).json({ updated: false });
+      }
     })
-    .catch(() => {});
+    .catch((er) => {
+      res.status(200).json({ updated: false, msg: er });
+    });
 };
 
 exports.EditLink = (req, res, next) => {
+  if (req.auth === false) {
+    res.status(200).json({ auth: false });
+    return;
+  }
+  if (req.body._id.length !== 24) {
+    res.status(200).json({ updated: false });
+    return;
+  }
   db.getDb()
     .db()
     .collection("Material")
@@ -188,12 +223,23 @@ exports.EditLink = (req, res, next) => {
       }
     )
     .then((res1) => {
-      res.status(200).json(res1);
+      if (res1.modifiedCount === 1) {
+        res.status(200).json({ updated: true });
+      } else {
+        res.status(200).json({ updated: false });
+      }
     })
-    .catch(() => {});
+    .catch((er) => {
+      res.status(200).json({ updated: false, msg: er });
+    });
 };
 
 exports.AddFiles = (req, res, next) => {
+  if (req.auth === false) {
+    res.status(200).json({ auth: false });
+    return;
+  }
+  console.log(req.body);
   if (req.files) {
     let fileToUpload = req.files.file;
     const fileName = req.body.week + fileToUpload.name;
@@ -204,6 +250,10 @@ exports.AddFiles = (req, res, next) => {
       } else {
         const link = "http://localhost:5000/files/" + fileName;
         if (req.body.edit === "true") {
+          if (req.body._id.length !== 24) {
+            res.status(200).json({ fetch: false });
+            return;
+          }
           db.getDb()
             .db()
             .collection("Material")
@@ -219,10 +269,14 @@ exports.AddFiles = (req, res, next) => {
               }
             )
             .then((resp) => {
-              res.status(200).json(resp);
+              if (resp.modifiedCount === 1) {
+                res.status(200).json({ updated: true });
+              } else {
+                res.status(200).json({ updated: false });
+              }
             })
             .catch(() => {
-              console.log("error");
+              res.status(200).json({ updated: false });
             });
         } else {
           db.getDb()
@@ -236,29 +290,43 @@ exports.AddFiles = (req, res, next) => {
               visibility: req.body.visibility,
             })
             .then((resp) => {
-              // res.status(200).json(resp);
-              const materialID = resp.insertedId;
-              db.getDb()
-                .db()
-                .collection("Week")
-                .updateOne(
-                  {
-                    _id: mongodb.ObjectId(req.body.week),
-                  },
-                  { $push: { contents: materialID } }
-                )
-                .then((resp) => {
-                  res.status(200).json(resp);
-                })
-                .catch();
+              if (resp.insertedId) {
+                const materialID = resp.insertedId;
+                db.getDb()
+                  .db()
+                  .collection("Week")
+                  .updateOne(
+                    {
+                      _id: mongodb.ObjectId(req.body.week),
+                    },
+                    { $push: { contents: materialID } }
+                  )
+                  .then((resp) => {
+                    if (resp.modifiedCount === 1) {
+                      res.status(200).json({ updated: true });
+                    } else {
+                      res.status(200).json({ updated: false });
+                    }
+                  })
+                  .catch(() => {
+                    res.status(200).json({ updated: false });
+                  });
+              } else {
+                res.status(200).json({ updated: false });
+              }
             })
             .catch((er) => {
-              console.log(er);
+              res.status(200).json({ updated: false });
             });
         }
       }
     });
   } else {
+    if (req.body._id.length !== 24) {
+      res.status(200).json({ fetch: false });
+      return;
+    }
+
     db.getDb()
       .db()
       .collection("Material")
@@ -273,12 +341,24 @@ exports.AddFiles = (req, res, next) => {
         }
       )
       .then((resp) => {
-        res.status(200).json(resp);
+        if (resp.modifiedCount === 1) {
+          res.status(200).json({ updated: true });
+        } else {
+          res.status(200).json({ updated: false });
+        }
       });
   }
 };
 
 exports.EditNotes = (req, res, next) => {
+  if (req.auth === false) {
+    res.status(200).json({ auth: false });
+    return;
+  }
+  if (req.body._id.length !== 24) {
+    res.status(200).json({ updated: false });
+    return;
+  }
   db.getDb()
     .db()
     .collection("Material")
@@ -293,9 +373,15 @@ exports.EditNotes = (req, res, next) => {
       }
     )
     .then((res1) => {
-      res.status(200).json(res1);
+      if (res1.modifiedCount === 1) {
+        res.status(200).json({ updated: true });
+      } else {
+        res.status(200).json({ updated: false });
+      }
     })
-    .catch(() => {});
+    .catch(() => {
+      res.status(200).json({ updated: false });
+    });
 };
 
 exports.GetMDate = (req, res, next) => {
