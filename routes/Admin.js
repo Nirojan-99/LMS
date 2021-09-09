@@ -9,6 +9,8 @@ router.use(fileUpload());
 
 router.get("/get_week/", Student.GetWeek);
 
+router.post("/add_week",Material.AddWeek );
+
 router.post("/add_material/", Material.AddMaterial);
 
 router.get("/get_materials/", Student.GetMaterials);

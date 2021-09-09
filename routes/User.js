@@ -6,7 +6,7 @@ const Profile = require("../Controller/User");
 
 router.post("/login", Profile.Login);
 
-router.post("/check_mail", Profile.CheckMail);
+router.get("/check_mail/", Profile.CheckMail);
 
 router.post("/check_otp", Profile.CheckOTP);
 
@@ -25,5 +25,9 @@ router.delete("/delete_user/", Profile.DeleteUser);
 router.get("/get_modules/", Profile.GetModules);
 
 router.post("/unenroll", Profile.Unenroll);
+
+router.post("/reset_password", Profile.ResetPass);
+
+router.get("/check_pass_reset_validity/", Profile.CheckValidity);
 
 module.exports = router;
