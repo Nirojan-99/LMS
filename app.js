@@ -19,6 +19,7 @@ const HelpDesk = require("./routes/HelpDesk");
 const Announcement = require("./routes/Announcement");
 const UserManagement = require("./routes/UserManagement");
 const Library = require("./routes/Library");
+const ForumManagement=require("./routes/ForumManagement");
 
 app.use(isAuth);
 app.use(BodyParser.urlencoded({ extended: false }));
@@ -57,6 +58,7 @@ app.use("/announcement", Announcement);
 app.use("/library", Library);
 app.use("/userManagement", UserManagement);
 app.use("/", JobRoutes);
+app.use("/ForumManagement" , ForumManagement);
 
 
 db.initDb((err, db) => {
