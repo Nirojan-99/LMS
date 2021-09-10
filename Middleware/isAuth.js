@@ -1,8 +1,9 @@
 const jwt = require("jsonwebtoken");
+const mongodb = require("mongodb");
+const db = require("../db");
 
 module.exports = (req, res, next) => {
   const authHeader = req.get("Authorization");
-  // console.log(authHeader+" niro")
   if (!authHeader) {
     req.auth = false;
     return next();
@@ -11,7 +12,7 @@ module.exports = (req, res, next) => {
 
   if (!token || token === "") {
     req.auth = false;
-    return next()
+    return next();
   }
 
   let decodedToken;
@@ -26,8 +27,25 @@ module.exports = (req, res, next) => {
     req.auth = false;
     return next();
   }
-  
-  req.auth = true;
   req.userID = decodedToken.userID;
+  userID = decodedToken.userID;
+
+  db.getDb()
+    .db()
+    .collection("User")
+    .findOne({ _id: new mongodb.ObjectId(userID) })
+    .then((resp) => {
+      if (resp) {
+        const type = resp.type;
+        req.type = type === "admin" || type === "lecturer";
+      } else {
+        req.type = false;
+      }
+    })
+    .catch((er) => {
+      console.log(er);
+    });
+
+  req.auth = true;
   next();
 };

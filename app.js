@@ -14,7 +14,7 @@ const Event = require("./routes/Event");
 const HelpDesk = require("./routes/HelpDesk");
 const Announcement = require("./routes/Announcement");
 const UserManagement = require("./routes/UserManagement");
-
+const Library = require("./routes/Library");
 
 app.use(isAuth);
 app.use(BodyParser.urlencoded({ extended: false }));
@@ -23,6 +23,7 @@ app.use(BodyParser.json());
 app.use(cors());
 
 app.use("/uploads", express.static("uploads"));
+app.use("/Books", express.static("Books"));
 app.use("/Dp", express.static("Dp"));
 app.use("/files", express.static("files"));
 app.use("/announcement", express.static("announcement"));
@@ -44,8 +45,9 @@ app.use("/attandance", Attandance);
 app.use("/event", Event);
 app.use("/helpDesk", HelpDesk);
 app.use("/announcement", Announcement);
-app.use("/", JobRoutes);
+app.use("/library", Library);
 app.use("/userManagement", UserManagement);
+app.use("/", JobRoutes);
 
 db.initDb((err, db) => {
   if (err) {
