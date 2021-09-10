@@ -2,6 +2,30 @@ const Router = require("express").Router;
 const mongodb = require("mongodb");
 const db = require("../db");
 const router = Router();
+let newIDNo;
+let newID;
+
+
+router.post("/get_userID", (req, res, next) => {
+  db.getDb()
+    .db()
+    .collection("User")
+    .find()
+    .toArray()
+    .then((resp) => {
+     const last= resp[resp.length-1]
+      newIDNo=last.IDNo +5;
+      newID="LMS" + newIDNo;
+      // console.log(newID);
+      res.status(200).json(newID);
+    })
+    .catch(() => {
+      console.log("err");
+      res.status(200).json({ error: "Can not get user data from database" });
+    });
+});
+
+
 
 router.post("/add_user", (req, res, next) => {
   db.getDb()
@@ -9,10 +33,7 @@ router.post("/add_user", (req, res, next) => {
     .collection("User")
     .findOne({ email: req.body.email })
     .then((resp) => {
-      if (resp == undefined) {
-        // console.log(resp);
-        // console.log("no email");
-        // res.status(200).json(false);
+      if (!resp) {
         function generatePassword() {
           var length = 8,
             charset =
@@ -24,7 +45,7 @@ router.post("/add_user", (req, res, next) => {
           return retVal;
         }
         const password = generatePassword();
-
+        
         db.getDb()
           .db()
           .collection("User")
@@ -33,6 +54,8 @@ router.post("/add_user", (req, res, next) => {
             email: req.body.email,
             password: password,
             type: req.body.role,
+            ID: newID,
+            IDNo:newIDNo,
             date: req.body.date,
             contact: req.body.contact,
             address: req.body.address,
@@ -92,8 +115,6 @@ router.post("/edit_user", (req, res, next) => {
 });
 
 router.post("/update_user", (req, res, next) => {
-  // console.log("I am Here");
-  // console.log(req.body);
   db.getDb()
     .db()
     .collection("User")
@@ -109,7 +130,7 @@ router.post("/update_user", (req, res, next) => {
           faculty: req.body.faculty,
           type: req.body.type,
           password: req.body.password,
-        }
+        },
       }
     )
     .then((resp) => {
@@ -120,7 +141,6 @@ router.post("/update_user", (req, res, next) => {
       console.log("error");
     });
 });
-
 
 router.post("/delete_user/", (req, res, next) => {
   db.getDb()
