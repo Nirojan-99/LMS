@@ -3,6 +3,10 @@ const cors = require("cors");
 const app = express();
 const BodyParser = require("body-parser");
 
+
+const Faculty = require('./routes/Faculty');
+const course = require('./routes/course');
+const Module = require('./routes/Module');
 const db = require("./db");
 const isAuth = require("./Middleware/isAuth");
 const AdminRoutes = require("./routes/Admin");
@@ -38,6 +42,11 @@ app.use((req, res, next) => {
   next();
 });
 
+
+app.use('/admin', AdminRoutes);
+app.use('/Faculty', Faculty);
+app.use('/course', course);
+app.use('/Module', Module);
 app.use("/admin", AdminRoutes);
 app.use("/insight", Insights);
 app.use("/user", User);
@@ -48,6 +57,7 @@ app.use("/announcement", Announcement);
 app.use("/library", Library);
 app.use("/userManagement", UserManagement);
 app.use("/", JobRoutes);
+
 
 db.initDb((err, db) => {
   if (err) {
