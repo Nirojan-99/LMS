@@ -3,6 +3,10 @@ const cors = require('cors')
 const app = express();
 const BodyParser = require("body-parser");
 
+
+const Faculty = require('./routes/Faculty');
+const course = require('./routes/course');
+const Module = require('./routes/Module');
 const AdminRoutes = require('./routes/Admin');
 const JobRoutes = require('./routes/Jobportal');
 const Insights = require('./routes/insights');
@@ -40,6 +44,9 @@ app.use((req, res, next) => {
 
 
 app.use('/admin', AdminRoutes);
+app.use('/Faculty', Faculty);
+app.use('/course', course);
+app.use('/Module', Module);
 app.use('/insight', Insights);
 app.use('/user', User);
 app.use('/attandance', Attandance);
