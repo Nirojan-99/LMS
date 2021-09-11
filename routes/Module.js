@@ -90,38 +90,54 @@ router.post("/delete_Module", (req, res, next) => {
     });
 });
 
-
 router.post("/UpdateModule", (req, res, next) => {
-  console.log(req.body)
+  console.log(req.body);
   db.getDb()
     .db()
     .collection("Module")
     .updateOne(
-     
       { _id: new mongodb.ObjectId(req.body._id) },
       {
         $set: {
-          Modulename:req.body.Modulename, 
-          ModuleCode:req.body.ModuleCode,
-          ModuleEnrollmentkey:req.body.ModuleEnrollmentkey,
-          ModuleWeekCounts:req.body.ModuleWeekCounts,
-          ModuleLectureIncharge:req.body.ModuleLectureIncharge,
-
-          
-        
+          Modulename: req.body.Modulename,
+          ModuleCode: req.body.ModuleCode,
+          ModuleEnrollmentkey: req.body.ModuleEnrollmentkey,
+          ModuleWeekCounts: req.body.ModuleWeekCounts,
+          ModuleLectureIncharge: req.body.ModuleLectureIncharge,
         },
       }
-      
     )
-    
+
     .then((resp) => {
       res.status(200).json(resp);
       console.log(resp);
-  
-      
     })
     .catch(() => {
       console.log("error");
+    });
+});
+
+router.get("/get_Modulecheck/", (req, res, next) => {
+  console.log(req.query);
+  db.getDb()
+    .db()
+    .collection("Module")
+    .find({
+      _id: new mongodb.ObjectId(req.query.moduleId),
+    })
+    .toArray()
+    .then((resp) => {
+      if (!resp) {
+        res.status(200).json({ error: "no Module at the moment" });
+      } else {
+        res.status(200).json(resp);
+        console.log("hi");
+        console.log(resp);
+      }
+    })
+    .catch(() => {
+      console.log("err");
+      res.status(200).json({ error: "can not get Module from database" });
     });
 });
 
