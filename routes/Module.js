@@ -117,6 +117,7 @@ router.post("/UpdateModule", (req, res, next) => {
     });
 });
 
+
 router.get("/get_Modulecheck/", (req, res, next) => {
   console.log(req.query);
   db.getDb()
@@ -138,6 +139,61 @@ router.get("/get_Modulecheck/", (req, res, next) => {
     .catch(() => {
       console.log("err");
       res.status(200).json({ error: "can not get Module from database" });
+        });
+});
+
+router.get("/get_LIC/", (req, res, next) => {
+  db.getDb()
+    .db()
+    .collection("Module")
+    .findOne({ _id: new mongodb.ObjectId(req.query.moduleID) })
+    .then((resp) => {
+      res
+        .status(200)
+        .json({ LIC: resp.ModuleLectureIncharge, name: resp.Modulename });
+    })
+    .catch((er) => {
+      console.log(er);
+    });
+});
+
+router.post("/enroll/", (req, res, next) => {
+  db.getDb()
+    .db()
+    .collection("Module")
+    .findOne({
+      _id: new mongodb.ObjectId(req.body.moduleID),
+      ModuleEnrollmentkey: req.body.key,
+    })
+    .then((resp) => {
+      console.log(resp);
+      if (resp) {
+        db.getDb()
+          .db()
+          .collection("Enroll")
+          .updateOne(
+            { id: req.body.moduleID, name: req.body.name },
+            { $addToSet: { students: req.body.studentID } },
+            { upsert: true }
+          )
+          .then((resp) => {
+            if (resp.modifiedCount === 1 || resp.upsertedCount === 1) {
+              res.status(200).json({ ack: true });
+            } else {
+              res.status(200).json({ ack: false });
+            }
+          })
+          .catch((er) => {
+            console.log(er);
+            res.status(200).json({ ack: false });
+          });
+      } else {
+        res.status(200).json({ ack: false });
+      }
+    })
+    .catch((er) => {
+      console.log(er);
+
     });
 });
 

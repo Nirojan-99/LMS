@@ -35,4 +35,6 @@ router.post("/edit_notes/", Material.EditNotes);
 
 router.get("/get_material/date/", Material.GetMDate);
 
+router.get("/check_enrollment/", Material.CheckEnrollment);
+
 module.exports = router;
