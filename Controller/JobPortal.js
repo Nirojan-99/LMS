@@ -29,64 +29,75 @@ exports.AddJob = (req, res, next) => {
     res.status(200).json({ auth: false });
     return;
   }
+  if (req.type === false) {
+    res.status(200).json({ auth: false });
+    return;
+  }
   if (req.files) {
     let poster = req.files.jobPoster;
     const fileName = req.body.companyName + poster.name;
 
-    poster.mv("uploads/" + fileName, (error) => {
-      if (error) {
-        console.log(error);
-      } else {
-        const link = "http://localhost:5000/uploads/" + fileName;
-        if (req.body.edit === "true") {
-          db.getDb()
-            .db()
-            .collection("Job")
-            .updateOne(
-              { _id: new mongodb.ObjectId(req.body._id) },
-              {
-                $set: {
-                  name: req.body.name,
-                  companyName: req.body.companyName,
-                  jobDetails: req.body.jobDetails,
-                  jobPoster: link,
-                },
-              }
-            )
-            .then((resp) => {
-              if (resp.modifiedCount === 1) {
-                res.status(200).json({ uploaded: true });
-              } else {
-                res.status(200).json({ uploaded: false });
-              }
-            })
-            .catch(() => {
-              res.status(200).json({ uploaded: false });
-            });
+    if (
+      poster.mimetype.includes("image/jpeg") &&
+      poster.size / (1024 * 1024) < 5
+    ) {
+      poster.mv("uploads/" + fileName, (error) => {
+        if (error) {
+          console.log(error);
         } else {
-          db.getDb()
-            .db()
-            .collection("Job")
-            .insertOne({
-              name: req.body.name,
-              companyName: req.body.companyName,
-              jobDetails: req.body.jobDetails,
-              jobPoster: link,
-            })
-            .then((resp) => {
-              console.log(resp);
-              if (resp.insertedId) {
-                res.status(200).json({ uploaded: true });
-              } else {
+          const link = "http://localhost:5000/uploads/" + fileName;
+          if (req.body.edit === "true") {
+            db.getDb()
+              .db()
+              .collection("Job")
+              .updateOne(
+                { _id: new mongodb.ObjectId(req.body._id) },
+                {
+                  $set: {
+                    name: req.body.name,
+                    companyName: req.body.companyName,
+                    jobDetails: req.body.jobDetails,
+                    jobPoster: link,
+                  },
+                }
+              )
+              .then((resp) => {
+                if (resp.modifiedCount === 1) {
+                  res.status(200).json({ uploaded: true });
+                } else {
+                  res.status(200).json({ uploaded: false });
+                }
+              })
+              .catch(() => {
                 res.status(200).json({ uploaded: false });
-              }
-            })
-            .catch((er) => {
-              res.status(200).json({ uploaded: false });
-            });
+              });
+          } else {
+            db.getDb()
+              .db()
+              .collection("Job")
+              .insertOne({
+                name: req.body.name,
+                companyName: req.body.companyName,
+                jobDetails: req.body.jobDetails,
+                jobPoster: link,
+              })
+              .then((resp) => {
+                console.log(resp);
+                if (resp.insertedId) {
+                  res.status(200).json({ uploaded: true });
+                } else {
+                  res.status(200).json({ uploaded: false });
+                }
+              })
+              .catch((er) => {
+                res.status(200).json({ uploaded: false });
+              });
+          }
         }
-      }
-    });
+      });
+    } else {
+      res.status(200).json({ error: true });
+    }
   } else {
     db.getDb()
       .db()
@@ -142,6 +153,10 @@ exports.GetJob = (req, res, next) => {
 
 exports.DeleteJob = (req, res, next) => {
   if (req.auth === false) {
+    res.status(200).json({ auth: false });
+    return;
+  }
+  if (req.type === false) {
     res.status(200).json({ auth: false });
     return;
   }
