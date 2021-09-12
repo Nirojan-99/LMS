@@ -7,10 +7,14 @@ exports.AddTicket = (req, res, next) => {
     .collection("Tickets")
     .insertOne(req.body)
     .then((resp) => {
-      res.status(200).json(resp);
+      if (resp.insertedId){
+        res.status(200).json({ack:true})
+      }else{
+        res.status(200).json({ack:false})
+      }
     })
     .catch((er) => {
-      console.log(er);
+      res.status(200).json({ack:false})
     });
 };
 
