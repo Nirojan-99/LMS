@@ -170,6 +170,14 @@ exports.AddDP = (req, res, next) => {
   let poster = req.files.dp;
   const fileName = req.body._id + poster.name;
 
+  if (
+    !poster.mimetype.includes("image/jpeg") ||
+    !(poster.size / (1024 * 1024) < 5)
+  ) {
+    res.status(200).json({ file: false });
+    return;
+  }
+
   poster.mv("Dp/" + fileName, (error) => {
     if (error) {
       res.status(200).json({ ack: false });
