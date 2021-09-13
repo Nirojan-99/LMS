@@ -16,4 +16,8 @@ router.post("/add_normalForum/",Forum.AddNormalForum);
 
 router.get("/get_normalForums/",Forum.GetNormalForums);
 
+router.post("/add_replyForum/",Forum.AddReplyForum);
+
+router.get("/get_replyForum/",Forum.GetReplyForum);
+
 module.exports = router;
