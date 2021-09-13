@@ -5,7 +5,6 @@ const db = require("../db");
 const router = Router();
 
 router.post("/addcourse", (req, res, next) => {
-  // console.log(req.body)
   db.getDb()
     .db()
     .collection("course")
@@ -50,13 +49,11 @@ router.post("/delete_course", (req, res, next) => {
 
 //try
 router.post("/getyear", (req, res, next) => {
- 
   db.getDb()
     .db()
     .collection("course")
     .findOne({ _id: new mongodb.ObjectId(req.body.id) })
     .then((resp) => {
-    
       if (!resp) {
         res.status(200).json({ error: "no jobs at the moment" });
       } else {
@@ -70,34 +67,28 @@ router.post("/getyear", (req, res, next) => {
 });
 //
 
-
 router.post("/Updatecourse", (req, res, next) => {
-  console.log(req.body)
+  console.log(req.body);
   db.getDb()
     .db()
     .collection("course")
     .updateOne(
-     
       { _id: new mongodb.ObjectId(req.body._id) },
       {
         $set: {
           courseID: req.body.courseID,
           coursename: req.body.coursename,
           courseIncharge: req.body.courseIncharge,
-          courseDuration:req.body.courseDuration,
-          courseYear:req.body.courseYear,
-          semester:req.body.semester,
-        
+          courseDuration: req.body.courseDuration,
+          courseYear: req.body.courseYear,
+          semester: req.body.semester,
         },
       }
-      
     )
-    
+
     .then((resp) => {
       res.status(200).json(resp);
       console.log(resp);
-  
-      
     })
     .catch(() => {
       console.log("error");
@@ -105,7 +96,6 @@ router.post("/Updatecourse", (req, res, next) => {
 });
 
 router.post("/getcourse", (req, res, next) => {
-
   db.getDb()
     .db()
     .collection("course")
@@ -123,11 +113,8 @@ router.post("/getcourse", (req, res, next) => {
     });
 });
 
-
-
 router.post("/get_Module", (req, res, next) => {
   if (req.body.Modules) {
-    //   const arr = req.body.courses.split(",");
     const contentID = req.body.Modules.map((row) => {
       return mongodb.ObjectId(row);
     });
@@ -149,8 +136,5 @@ router.post("/get_Module", (req, res, next) => {
     res.status(200).json({ msg: "no Module" });
   }
 });
-
-
-
 
 module.exports = router;

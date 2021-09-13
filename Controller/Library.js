@@ -8,11 +8,24 @@ exports.Addbook = (req, res, next) => {
   //   return;
   // }
   if (req.files) {
-    console.log(req.files);
     let poster = req.files.bookPoster;
     let books = req.files.books;
     const fileName = req.body.author + poster.name;
     const bookName = req.body.author + books.name;
+
+    if (
+      !poster.mimetype.includes("image/jpeg") ||
+      !(poster.size / (1024 * 1024) < 5)
+    ) {
+      res.status(200).json({ fileError: true });
+      return;
+    } else if (
+      !books.mimetype.includes("pdf") ||
+      !(books.size / (1024 * 1024) < 15)
+    ) {
+      res.status(200).json({ fileError: true });
+      return;
+    }
 
     books.mv("Books/" + bookName, (error) => {
       if (error) {
@@ -66,7 +79,6 @@ exports.Addbook = (req, res, next) => {
                   type: req.body.type,
                 })
                 .then((resp) => {
-                  console.log(resp);
                   if (resp.insertedId) {
                     res.status(200).json({ ack: true });
                   } else {
@@ -82,7 +94,6 @@ exports.Addbook = (req, res, next) => {
       }
     });
   } else {
-    console.log("cl");
     db.getDb()
       .db()
       .collection("Library")
@@ -247,6 +258,15 @@ exports.Addpaper = (req, res, next) => {
   if (req.files) {
     let poster = req.files.paperfile;
     const fileName = req.body.name + poster.name;
+
+    if (
+      !poster.mimetype.includes("application") ||
+      !(poster.size / (1024 * 1024) < 10)
+    ) {
+      res.status(200).json({ fileError: true });
+      return;
+    }
+
     poster.mv("Books/" + fileName, (error) => {
       if (error) {
         console.log(error);
@@ -301,7 +321,6 @@ exports.Addpaper = (req, res, next) => {
       }
     });
   } else {
-    console.log("cl");
     db.getDb()
       .db()
       .collection("Library")

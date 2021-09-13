@@ -30,4 +30,5 @@ router.post("/reset_password", Profile.ResetPass);
 
 router.get("/check_pass_reset_validity/", Profile.CheckValidity);
 
+
 module.exports = router;

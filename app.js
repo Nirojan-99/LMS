@@ -7,6 +7,7 @@ const BodyParser = require("body-parser");
 const Faculty = require('./routes/Faculty');
 const course = require('./routes/course');
 const Module = require('./routes/Module');
+const Enroll = require('./routes/Enroll');
 const db = require("./db");
 const isAuth = require("./Middleware/isAuth");
 const AdminRoutes = require("./routes/Admin");
@@ -20,6 +21,8 @@ const Announcement = require("./routes/Announcement");
 const UserManagement = require("./routes/UserManagement");
 const Library = require("./routes/Library");
 const ForumManagement=require("./routes/ForumManagement");
+
+
 
 app.use(isAuth);
 app.use(BodyParser.urlencoded({ extended: false }));
@@ -48,6 +51,7 @@ app.use('/admin', AdminRoutes);
 app.use('/Faculty', Faculty);
 app.use('/course', course);
 app.use('/Module', Module);
+app.use('/Enroll', Enroll);
 app.use("/admin", AdminRoutes);
 app.use("/insight", Insights);
 app.use("/user", User);
@@ -59,6 +63,8 @@ app.use("/library", Library);
 app.use("/userManagement", UserManagement);
 app.use("/", JobRoutes);
 app.use("/ForumManagement" , ForumManagement);
+
+
 
 
 db.initDb((err, db) => {

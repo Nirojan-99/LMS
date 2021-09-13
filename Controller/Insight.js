@@ -2,10 +2,10 @@ const mongodb = require("mongodb");
 const db = require("../db");
 
 exports.getInsight = (req, res, next) => {
-  if (req.auth === false) {
-    res.status(200).json({ auth: false });
-    return;
-  }
+  // if (req.auth === false) {
+  //   res.status(200).json({ auth: false });
+  //   return;
+  // }
   db.getDb()
     .db()
     .collection("Material_Insight")
@@ -31,7 +31,6 @@ exports.AddInsight = (req, res, next) => {
       "students.student": req.body.student,
     })
     .then((resp) => {
-      console.log(resp);
       if (resp) {
         res.status(200).json(resp);
       } else {
