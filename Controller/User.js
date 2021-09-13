@@ -306,7 +306,7 @@ exports.Unenroll = (req, res, next) => {
       {
         _id: new mongodb.ObjectId(req.body.ID),
       },
-      { $pull: { students: req.body.student } }
+      { $pull: { students: req.body.student },}
     )
     .then((resp) => {
       if (resp.modifiedCount === 1) {
@@ -375,3 +375,6 @@ exports.CheckValidity = (req, res, next) => {
       res.status(200).json({ ack: false });
     });
 };
+
+
+
