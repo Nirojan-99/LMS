@@ -5,14 +5,14 @@ const db = require("../db");
 const router = Router();
 
 router.post("/addModule", (req, res, next) => {
-  console.log(req.body.data);
+
   db.getDb()
     .db()
     .collection("Module")
     .insertOne(req.body.data)
     .then((resp) => {
       const courseID = resp.insertedId;
-      console.log(req.body.courseID);
+    
       db.getDb()
         .db()
         .collection("course")
@@ -23,7 +23,7 @@ router.post("/addModule", (req, res, next) => {
           { $push: { modules: courseID } }
         )
         .then((resp) => {
-          console.log(resp);
+     
           res.status(200).json(resp);
         })
         .catch(() => {});
@@ -82,7 +82,7 @@ router.post("/delete_Module", (req, res, next) => {
     .collection("Module")
     .deleteOne({ _id: new mongodb.ObjectId(req.body._id) })
     .then((resp) => {
-      console.log(resp);
+
       res.status(200).json(resp);
     })
     .catch((er) => {
@@ -110,7 +110,7 @@ router.post("/UpdateModule", (req, res, next) => {
 
     .then((resp) => {
       res.status(200).json(resp);
-      console.log(resp);
+  
     })
     .catch(() => {
       console.log("error");
@@ -119,7 +119,7 @@ router.post("/UpdateModule", (req, res, next) => {
 
 
 router.get("/get_Modulecheck/", (req, res, next) => {
-  console.log(req.query);
+
   db.getDb()
     .db()
     .collection("Module")
@@ -132,8 +132,7 @@ router.get("/get_Modulecheck/", (req, res, next) => {
         res.status(200).json({ error: "no Module at the moment" });
       } else {
         res.status(200).json(resp);
-        console.log("hi");
-        console.log(resp);
+   
       }
     })
     .catch(() => {
@@ -166,14 +165,14 @@ router.post("/enroll/", (req, res, next) => {
       ModuleEnrollmentkey: req.body.key,
     })
     .then((resp) => {
-      console.log(resp);
+     
       if (resp) {
         db.getDb()
           .db()
           .collection("Enroll")
           .updateOne(
-            { id: req.body.moduleID, name: req.body.name },
-            { $addToSet: { students: req.body.studentID } },
+            { id: req.body.moduleID, name: req.body.name,firstaccestime:req.body.date_time,studentIDno:req.body.studentIDno},
+            { $addToSet: { students: req.body.studentID, }},
             { upsert: true }
           )
           .then((resp) => {
