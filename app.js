@@ -21,6 +21,7 @@ const Announcement = require("./routes/Announcement");
 const UserManagement = require("./routes/UserManagement");
 const Library = require("./routes/Library");
 const ForumManagement=require("./routes/ForumManagement");
+const ContactUs=require("./routes/ContactUs");
 
 
 
@@ -48,6 +49,7 @@ app.use((req, res, next) => {
 
 
 app.use('/admin', AdminRoutes);
+app.use('/contact_us', ContactUs);
 app.use('/Faculty', Faculty);
 app.use('/course', course);
 app.use('/Module', Module);
