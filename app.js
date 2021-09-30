@@ -21,6 +21,8 @@ const Announcement = require("./routes/Announcement");
 const UserManagement = require("./routes/UserManagement");
 const Library = require("./routes/Library");
 const ForumManagement=require("./routes/ForumManagement");
+const ExamRoutes=require("./routes/Exam");
+const ExMarkRoutes=require("./routes/ExamMarks");
 const ContactUs=require("./routes/ContactUs");
 const StudentPortal=require("./routes/StudentPortal");
 
@@ -67,6 +69,8 @@ app.use("/library", Library);
 app.use("/userManagement", UserManagement);
 app.use("/", JobRoutes);
 app.use("/ForumManagement" , ForumManagement);
+app.use("/exams" , ExamRoutes);
+app.use("/exMarks" , ExMarkRoutes);
 
 
 
