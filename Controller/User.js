@@ -3,7 +3,7 @@ const db = require("../db");
 const fileUpload = require("express-fileupload");
 const jwt = require("jsonwebtoken");
 const e = require("express");
-<<<<<<< HEAD
+
 const nodemailer=require('nodemailer');
 
 
@@ -36,8 +36,7 @@ const sendEmail = (otp,email) => {
     }
   });
 };
-=======
->>>>>>> 0fb22ce847a91ba46bc5461b9bee832b135e5f70
+
 
 exports.Login = (req, res, next) => {
   db.getDb()
@@ -75,23 +74,21 @@ exports.CheckMail = (req, res, next) => {
     .collection("User")
     .findOne({ email: req.query.email })
     .then((resp) => {
-<<<<<<< HEAD
+
       if (resp) {
         const userID = resp._id;
-=======
-      const userID = resp._id;
-      if (resp) {
->>>>>>> 0fb22ce847a91ba46bc5461b9bee832b135e5f70
+
+      
+  
         const OTP = Math.floor(Math.random() * 89999) + 10000;
         db.getDb()
           .db()
           .collection("OTP")
           .insertOne({ userID, email: req.query.email, OTP: OTP })
           .then((resp) => {
-<<<<<<< HEAD
+
             sendEmail(OTP,req.query.email);
-=======
->>>>>>> 0fb22ce847a91ba46bc5461b9bee832b135e5f70
+
             res.status(200).json({ available: true, userID });
           });
       } else {
@@ -350,11 +347,10 @@ exports.Unenroll = (req, res, next) => {
       {
         _id: new mongodb.ObjectId(req.body.ID),
       },
-<<<<<<< HEAD
-      { $pull: { students: req.body.student } }
-=======
+
+
       { $pull: { students: req.body.student },}
->>>>>>> 0fb22ce847a91ba46bc5461b9bee832b135e5f70
+
     )
     .then((resp) => {
       if (resp.modifiedCount === 1) {
@@ -423,9 +419,5 @@ exports.CheckValidity = (req, res, next) => {
       res.status(200).json({ ack: false });
     });
 };
-<<<<<<< HEAD
-=======
 
 
-
->>>>>>> 0fb22ce847a91ba46bc5461b9bee832b135e5f70
