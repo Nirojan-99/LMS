@@ -5,13 +5,22 @@ const db = require("../db");
 const router = Router();
 
 router.post("/addFaculty", (req, res, next) => {
+  if (req.auth === false) {
+    res.status(200).json({ auth: false });
+    return;
+  }
   db.getDb()
     .db()
     .collection("Faculty")
     .insertOne(req.body)
     .then((resp) => {
-      console.log(resp);
-      res.status(200).json(resp);
+      if (resp.insertedId) {
+        res.status(200).json({ insert: true });
+      } else {
+        res.status(200).json({ insert: false });
+      }
+      // console.log(resp);
+      // res.status(200).json(resp);
     })
     .catch((er) => {
       console.log(er);
@@ -19,6 +28,11 @@ router.post("/addFaculty", (req, res, next) => {
 });
 
 router.get("/get_faculties", (req, res, next) => {
+  if (req.auth === false) {
+    res.status(200).json({ auth: false });
+    return;
+  }
+
   
   db.getDb()
     .db()
@@ -27,7 +41,7 @@ router.get("/get_faculties", (req, res, next) => {
     .toArray()
     .then((resp) => {
       if (!resp) {
-        res.status(200).json({ error: "no faculty at the moment" });
+        res.status(200).json({ error:true });
       } else {
         res.status(200).json(resp);
       }
@@ -79,6 +93,10 @@ router.post("/get_courses", (req, res, next) => {
 });
 
 router.post("/getfaculty", (req, res, next) => {
+  if (req.auth === false) {
+    res.status(200).json({ auth: false });
+    return;
+  }
 
   db.getDb()
     .db()
@@ -98,6 +116,10 @@ router.post("/getfaculty", (req, res, next) => {
 });
 
 router.post("/UpdateFaculty", (req, res, next) => {
+  if (req.auth === false) {
+    res.status(200).json({ auth: false });
+    return;
+  }
   console.log(req.body)
   db.getDb()
     .db()
@@ -117,8 +139,13 @@ router.post("/UpdateFaculty", (req, res, next) => {
     )
     
     .then((resp) => {
-      res.status(200).json(resp);
-      console.log(resp);
+      if (resp.modifiedCount === 1) {
+        res.status(200).json({ uploaded: true });
+      } else {
+        res.status(200).json({ uploaded: false });
+      }
+      // res.status(200).json(resp);
+      // console.log(resp);
   
       
     })

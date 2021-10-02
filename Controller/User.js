@@ -1,4 +1,4 @@
-const mongodb = require("mongodb");
+ const mongodb = require("mongodb");
 const db = require("../db");
 const fileUpload = require("express-fileupload");
 const jwt = require("jsonwebtoken");
@@ -375,6 +375,26 @@ exports.CheckValidity = (req, res, next) => {
       res.status(200).json({ ack: false });
     });
 };
+// exports.GetPassword =  (req, res, next) => {
+
+
+//   db.getDb()
+//     .db()
+//     .collection("User")
+//     .findOne({ _id: new mongodb.ObjectId(req.query.ID) })
+//     .then((resp) => {
+//        console.log(resp);
+//       if (!resp) {
+//         res.status(200).json({ error: "no jobs at the moment" });
+//       } else {
+//         res.status(200).json(resp);
+//       }
+//     })
+//     .catch((er) => {
+//       console.log(er);
+//     });
+//   }
+
 
 
 
