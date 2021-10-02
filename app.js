@@ -23,6 +23,7 @@ const Library = require("./routes/Library");
 const ForumManagement=require("./routes/ForumManagement");
 const ContactUs=require("./routes/ContactUs");
 const StudentPortal=require("./routes/StudentPortal");
+const Report=require("./routes/ReportPDFGenerator");
 
 
 
@@ -33,6 +34,7 @@ app.use(BodyParser.json());
 app.use(cors());
 
 app.use("/uploads", express.static("uploads"));
+app.use("/Reports", express.static("Reports"));
 app.use("/Books", express.static("Books"));
 app.use("/Dp", express.static("Dp"));
 app.use("/files", express.static("files"));
@@ -50,6 +52,7 @@ app.use((req, res, next) => {
 
 
 app.use('/admin', AdminRoutes);
+app.use('/report', Report);
 app.use('/contact_us', ContactUs);
 app.use('/Faculty', Faculty);
 app.use('/course', course);
