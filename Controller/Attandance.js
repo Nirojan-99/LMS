@@ -1,6 +1,11 @@
 const mongodb = require("mongodb");
 const db = require("../db");
 
+//pdf
+const PDFDocument = require("pdfkit");
+const fs = require("fs");
+const path = require("path");
+
 exports.CheckAttandance = (req, res, next) => {
   if (req.auth === false) {
     res.status(200).json({ auth: false });
@@ -94,6 +99,22 @@ exports.GetAttandees = (req, res, next) => {
       if (!resp) {
         res.status(200).json({ avalilable: false });
       } else {
+        const insightName = "insight" +  req.query.ID + ".pdf";
+        const insightPath = path.join("Reports", "Attandance", insightName);
+        const PDFKit = new PDFDocument();
+        PDFKit.pipe(fs.createWriteStream(insightPath));
+
+        PDFKit.fillColor("red").fontSize(25).text("ATTANDANCE REPORT");
+        PDFKit.text("\n");
+        resp.students.map((row) => {
+          const date = row.date_time.split("@");
+          PDFKit.fillColor("black")
+            .fontSize(12)
+            .text(row.studentName + " ----- " + date[0] + " ---- " + date[1]);
+          PDFKit.text("\n");
+        });
+        PDFKit.end();
+
         res.status(200).json(resp.students);
       }
     })
@@ -115,7 +136,8 @@ exports.getStudents = (req, res, next) => {
       if (!resp) {
         // res.status(200).json({ avalilable: false });
       } else {
-        res.status(200).json(resp.name);
+          res.status(200).json(resp.name);
+
       }
     })
     .catch((er) => {
