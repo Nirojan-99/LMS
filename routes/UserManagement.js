@@ -5,13 +5,13 @@ const UserManagement=require("../Controller/UserManagement");
 
 
 
-router.post("/get_userID/",UserManagement.GetUserID);
+router.get("/get_userID/",UserManagement.GetUserID);
 
 router.post("/add_user/",UserManagement.AddUser);
 
-router.post("/get_users/",UserManagement.GetUsers);
+router.get("/get_users/",UserManagement.GetUsers);
 
-router.post("/edit_user/",UserManagement.EditUser);
+router.get("/edit_user/",UserManagement.EditUser);
 
 router.post("/update_user/",UserManagement.UpdateUser);
 
