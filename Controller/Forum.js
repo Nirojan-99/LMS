@@ -68,7 +68,7 @@ exports.GetTopicForums = (req, res, next) => {
   db.getDb()
     .db()
     .collection("Material")
-    .find({ moduleID:req.query.moduleID, title:"TopForum"})
+    .find({ moduleID:req.query.moduleID, title:"TopForum",visibility:"visible"})
     .toArray()
     .then((resp) => {
       res.status(200).json(resp);
