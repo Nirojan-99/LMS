@@ -3,6 +3,38 @@ const db = require("../db");
 const fileUpload = require("express-fileupload");
 const jwt = require("jsonwebtoken");
 const e = require("express");
+const nodemailer=require('nodemailer');
+
+
+const sendEmail = (otp,email) => {
+  const h1 = "<h2>OTP for reset password</h2><hr>";
+  const h2 = h1 + "<h3>OTP: " + otp + "</h3>";
+
+  var transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: "project2020sliit@gmail.com",
+      pass: "sliit2020",
+    },
+  });
+
+  var mailOptions = {
+    from: "project2020sliit@gmail.com",
+    to: email,
+    subject: "OTP",
+    html: h2,
+  };
+
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.log(error);
+      // return false
+    } else {
+      console.log("Email sent: " + info.response);
+      // return true
+    }
+  });
+};
 
 exports.Login = (req, res, next) => {
   db.getDb()
@@ -40,14 +72,15 @@ exports.CheckMail = (req, res, next) => {
     .collection("User")
     .findOne({ email: req.query.email })
     .then((resp) => {
-      const userID = resp._id;
       if (resp) {
+        const userID = resp._id;
         const OTP = Math.floor(Math.random() * 89999) + 10000;
         db.getDb()
           .db()
           .collection("OTP")
           .insertOne({ userID, email: req.query.email, OTP: OTP })
           .then((resp) => {
+            sendEmail(OTP,req.query.email);
             res.status(200).json({ available: true, userID });
           });
       } else {
@@ -306,7 +339,7 @@ exports.Unenroll = (req, res, next) => {
       {
         _id: new mongodb.ObjectId(req.body.ID),
       },
-      { $pull: { students: req.body.student },}
+      { $pull: { students: req.body.student } }
     )
     .then((resp) => {
       if (resp.modifiedCount === 1) {
@@ -375,6 +408,3 @@ exports.CheckValidity = (req, res, next) => {
       res.status(200).json({ ack: false });
     });
 };
-
-
-
