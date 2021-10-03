@@ -236,7 +236,7 @@ exports.Enroll =  (req, res, next) => {
           .db()
           .collection("Enroll")
           .updateOne(
-            { id: req.body.moduleID, name: req.body.name,firstaccestime:req.body.date_time,studentIDno:req.body.studentIDno},
+            { id: req.body.moduleID, name: req.body.name},
             { $addToSet: { students: req.body.studentID, }},
             { upsert: true }
           )
