@@ -205,7 +205,7 @@ exports.GetReplyForum = (req, res, next) => {
   //   res.status(200).json({ auth: false });
   //   return;
   // }
- console.log(req.query.replyForumID);
+//  console.log(req.query.replyForumID);
   db.getDb()
     .db()
     .collection("ReplyForums")
@@ -217,3 +217,40 @@ exports.GetReplyForum = (req, res, next) => {
       res.status(200).json({ error: true });
     });
 };
+
+exports.UpdateNormalForum=(req, res, next)=>{
+
+  if (req.auth === false) {
+    res.status(200).json({ auth: false });
+    return;
+  }
+  if (req.body._id.length !== 24) {
+    res.status(200).json({ fetch: false });
+    return;
+  }
+
+  db.getDb()
+  .db()
+  .collection("Material")
+  .updateOne(
+    { _id: new mongodb.ObjectId(req.body._id) },
+    {
+      $set: {
+        msg: req.body.msg
+        
+      },
+    }
+  )
+  .then((resp) => {
+    if (resp.modifiedCount === 1) {
+      res.status(200).json({ updated: true });
+    } else {
+      res.status(200).json({ updated: false });
+    }
+  })
+  .catch((er) => {
+    res.status(200).json({ updated: false });
+  });
+
+
+}

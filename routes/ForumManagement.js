@@ -20,4 +20,6 @@ router.post("/add_replyForum/",Forum.AddReplyForum);
 
 router.get("/get_replyForum/",Forum.GetReplyForum);
 
+router.post("/update_normalForum/",Forum.UpdateNormalForum);
+
 module.exports = router;
