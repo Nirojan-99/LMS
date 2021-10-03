@@ -9,6 +9,10 @@ router.post("/add_book", Lib.Addbook);
 
 router.post("/add_paper", Lib.Addpaper);
 
+router.post("/add_insight", Lib.AddInsight);
+
+router.get("/get_insight", Lib.GetInsight);
+
 router.get("/get_paper/", Lib.GetPaper);
 
 router.get("/get_papers", Lib.GetPapers);
