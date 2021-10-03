@@ -25,6 +25,7 @@ const ExamRoutes=require("./routes/Exam");
 const ExMarkRoutes=require("./routes/ExamMarks");
 const ContactUs=require("./routes/ContactUs");
 const StudentPortal=require("./routes/StudentPortal");
+const TimeTable=require("./routes/Timetable");
 
 
 
@@ -35,6 +36,7 @@ app.use(BodyParser.json());
 app.use(cors());
 
 app.use("/uploads", express.static("uploads"));
+app.use("/TimeTable", express.static("TimeTable"));
 app.use("/Reports", express.static("Reports"));
 app.use("/Books", express.static("Books"));
 app.use("/Dp", express.static("Dp"));
@@ -52,6 +54,7 @@ app.use((req, res, next) => {
 });
 
 
+app.use("/timetable" , TimeTable);
 app.use('/admin', AdminRoutes);
 app.use('/contact_us', ContactUs);
 app.use('/Faculty', Faculty);
@@ -72,6 +75,7 @@ app.use("/", JobRoutes);
 app.use("/ForumManagement" , ForumManagement);
 app.use("/exams" , ExamRoutes);
 app.use("/exMarks" , ExMarkRoutes);
+
 
 
 
