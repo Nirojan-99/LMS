@@ -250,6 +250,63 @@ exports.DeletePaper = (req, res, next) => {
     });
 };
 
+exports.AddInsight = (req, res, next) => {
+  // if (req.auth === false) {
+  //   res.status(200).json({ auth: false });
+  //   return;
+  // }
+  db.getDb()
+    .db()
+    .collection("Library_Insight")
+    .findOne({
+      _id: new mongodb.ObjectId(req.body.bookID),
+      "students.id": req.body.ID,
+    })
+    .then((resp) => {
+      if (!resp) {
+        db.getDb()
+          .db()
+          .collection("Library_Insight")
+          .updateOne(
+            { _id: new mongodb.ObjectId(req.query.bookID) },
+            {
+              $addToSet: {
+                students: { id: req.body.ID, date_time: req.body.date_time },
+              },
+            },
+            { upsert: true }
+          )
+          .then((res1) => {});
+      }
+    })
+    .catch(() => {
+      res.status(200).json({ ack: false });
+    });
+};
+
+exports.GetInsight = (req, res, next) => {
+  // if (req.auth === false) {
+  //   res.status(200).json({ auth: false });
+  //   return;
+  // }
+  db.getDb()
+    .db()
+    .collection("Library_Insight")
+    .findOne({
+      _id: new mongodb.ObjectId(req.query.bookID),
+    })
+    .then((resp) => {
+      if (resp) {
+        res.status(200).json(resp);
+      } else {
+        res.status(200).json({ ack: false });
+      }
+    })
+    .catch(() => {
+      res.status(200).json({ ack: false });
+    });
+};
+
 exports.Addpaper = (req, res, next) => {
   // if (req.auth === false) {
   //   res.status(200).json({ auth: false });
