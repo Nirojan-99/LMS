@@ -4,6 +4,7 @@ const fileUpload = require("express-fileupload");
 router.use(fileUpload());
 const Profile = require("../Controller/User");
 
+
 router.post("/login", Profile.Login);
 
 router.get("/check_mail/", Profile.CheckMail);
@@ -29,6 +30,8 @@ router.post("/unenroll", Profile.Unenroll);
 router.post("/reset_password", Profile.ResetPass);
 
 router.get("/check_pass_reset_validity/", Profile.CheckValidity);
+
+// router.get("/getpassword/", Profile.GetPassword);
 
 
 module.exports = router;
