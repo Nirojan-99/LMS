@@ -268,7 +268,7 @@ exports.AddInsight = (req, res, next) => {
           .db()
           .collection("Library_Insight")
           .updateOne(
-            { _id: new mongodb.ObjectId(req.query.bookID) },
+            { _id: new mongodb.ObjectId(req.body.bookID) },
             {
               $addToSet: {
                 students: { id: req.body.ID, date_time: req.body.date_time },
