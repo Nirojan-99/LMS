@@ -1,6 +1,7 @@
 const Router = require("express").Router;
 const fileUpload = require("express-fileupload");
 const router = Router();
+
 const Job = require("../Controller/JobPortal");
 
 router.use(fileUpload());
