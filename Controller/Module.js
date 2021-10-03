@@ -163,7 +163,7 @@ exports.DeleteModule =  (req, res, next) => {
 };
 
 // get request
-//get module name
+//get module details
  
 exports.GetModuleDetails =  (req, res, next) => {
   if (req.auth === false) {
