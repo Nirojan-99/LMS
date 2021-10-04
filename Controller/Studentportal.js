@@ -29,7 +29,6 @@ exports.AddNewSemester = (req, res, next) => {
     res.status(200).json({ created: false });
     return;
   }
-console.log(req.body)
   db.getDb()
     .db()
     .collection("GPA")
@@ -66,7 +65,7 @@ exports.UpdateGPA = (req, res, next) => {
     res.status(200).json({ created: false });
     return;
   }
-  console.log(req.body);
+
 
   db.getDb()
     .db()

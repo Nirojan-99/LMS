@@ -17,7 +17,6 @@ exports.GetCourse = (req, res, next) => {
     .collection("course")
     .findOne({ _id: new mongodb.ObjectId(req.query.id) })
     .then((resp) => {
-      // console.log(resp);
       if (!resp) {
         res.status(200).json({ fetch: false });
       } else {
@@ -38,7 +37,6 @@ exports.AddCourse = (req, res, next) => {
     .insertOne(req.body.data)
     .then((resp) => {
       const facultyID = resp.insertedId;
-      console.log(req.body.facultyID);
       db.getDb()
         .db()
         .collection("Faculty")
@@ -49,7 +47,6 @@ exports.AddCourse = (req, res, next) => {
           { $push: { courses: facultyID } }
         )
         .then((resp) => {
-          console.log(resp);
           res.status(200).json(resp);
         })
         .catch(() => {});
@@ -66,7 +63,6 @@ exports.UpdateCourse = (req, res, next) => {
     res.status(200).json({ auth: false });
     return;
   }
-  console.log(req.body);
   db.getDb()
     .db()
     .collection("course")
@@ -90,8 +86,7 @@ exports.UpdateCourse = (req, res, next) => {
       } else {
         res.status(200).json({ uploaded: false });
       }
-      // res.status(200).json(resp);
-      // console.log(resp);
+
     })
     .catch(() => {
       console.log("error");
@@ -114,8 +109,6 @@ exports.DeleteCourse = (req, res, next) => {
     .collection("course")
     .deleteOne({ _id: new mongodb.ObjectId(req.query.id) })
     .then((resp) => {
-      // console.log(resp);
-      // res.status(200).json(resp);
       if (resp.deletedCount === 1) {
         res.status(200).json({ deleted: true });
       } else {
@@ -143,7 +136,6 @@ exports.GetYear = (req, res, next) => {
         res.status(200).json({ fetchYear: false });
       } else {
         res.status(200).json(resp);
-        //console.log(resp);
       }
     })
     .catch((er) => {
@@ -166,8 +158,6 @@ exports.GetModule = (req, res, next) => {
       .find({ _id: { $in: contentID } })
       .toArray()
       .then((resp) => {
-        console.log(resp);
-        // console.log("called");
         res.status(200).json(resp);
       })
       .catch((er) => {

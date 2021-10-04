@@ -13,7 +13,6 @@ exports.GetFaculty = (req, res, next) => {
     .collection("Faculty")
     .findOne({ _id: new mongodb.ObjectId(req.query.id) })
     .then((resp) => {
-      // console.log(resp);
       if (!resp) {
         res.status(200).json({ fetch: false });
       } else {
@@ -50,7 +49,6 @@ exports.GetFaculties = (req, res, next) => {
 };
 // add Faculty get request
 exports.AddFaculty = (req, res, next) => {
-  //console.log(req.body.name.length);
   if (req.auth === false) {
     res.status(200).json({ auth: false });
     return;
@@ -66,8 +64,6 @@ exports.AddFaculty = (req, res, next) => {
       } else {
         res.status(200).json({ insert: false });
       }
-      // console.log(resp);
-      // res.status(200).json(resp);
     })
     .catch((er) => {
       console.log(er);
@@ -80,7 +76,6 @@ exports.UpdateFaculty = (req, res, next) => {
     res.status(200).json({ auth: false });
     return;
   }
-  console.log(req.body);
   db.getDb()
     .db()
     .collection("Faculty")
@@ -101,8 +96,6 @@ exports.UpdateFaculty = (req, res, next) => {
       } else {
         res.status(200).json({ uploaded: false });
       }
-      // res.status(200).json(resp);
-      // console.log(resp);
     })
     .catch(() => {
       console.log("error");
@@ -124,8 +117,6 @@ exports.DeleteFaculty = (req, res, next) => {
     .collection("Faculty")
     .deleteOne({ _id: new mongodb.ObjectId(req.query.id) })
     .then((resp) => {
-      // console.log(resp);
-      // res.status(200).json(resp);
       if (resp.deletedCount === 1) {
         res.status(200).json({ deleted: true });
       } else {
@@ -160,9 +151,6 @@ exports.GetCourse = (req, res, next) => {
         } else {
           res.status(200).json(resp);
         }
-        // console.log(resp);
-        // // console.log("called");
-        // res.status(200).json(resp);
       })
       .catch((er) => {
         console.log(er);
