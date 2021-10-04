@@ -220,14 +220,14 @@ exports.DeleteUser = (req, res, next) => {
     res.status(200).json({ auth: false });
     return;
   }
-  if (req.body._id.length !== 24) {
+  if (req.query._id.length !== 24) {
     res.status(200).json({ fetch: false });
     return;
   }
   db.getDb()
     .db()
     .collection("User")
-    .deleteOne({ _id: new mongodb.ObjectId(req.body._id) })
+    .deleteOne({ _id: new mongodb.ObjectId(req.query._id) })
     .then((resp) => {
       if (resp.deletedCount === 1) {
         res.status(200).json({ deleted: true });
