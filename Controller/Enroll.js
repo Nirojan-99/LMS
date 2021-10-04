@@ -51,31 +51,30 @@ exports.EnrollStatus = (req, res, next) => {
 };
 
 exports.GetEnroll = (req, res, next) => {
-  if (req.auth === false) {
-    res.status(200).json({ auth: false });
-    return;
-  }
+  // if (req.auth === false) {
+  //   res.status(200).json({ auth: false });
+  //   return;
+  // }
   db.getDb()
     .db()
     .collection("Enroll")
     .findOne({ id: req.query.id })
     .then((resp) => {
       if (resp) {
-        const idArray = resp.students.map((row)=>{
-          return new mongodb.ObjectId(row)
-        })
+        const idArray = resp.students.map((row) => {
+          return new mongodb.ObjectId(row);
+        });
         db.getDb()
           .db()
           .collection("User")
-          .find({ _id:  {$in:idArray }})
+          .find({ _id: { $in: idArray } })
           .toArray()
           .then((res1) => {
-            if(res1){
+            if (res1) {
               res.status(200).json(res1);
-            }else{
+            } else {
               res.status(200).json({ ack: false });
             }
-            
           });
       } else {
         res.status(200).json({ ack: false });
