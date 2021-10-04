@@ -81,6 +81,10 @@ exports.AddUser = (req, res, next) => {
     res.status(200).json({ auth: false });
     return;
   }
+  if(req.body===null){
+    res.status(200).json({ inValidReq: true });
+    return;
+  }
   db.getDb()
     .db()
     .collection("User")
