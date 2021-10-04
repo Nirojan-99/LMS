@@ -100,17 +100,25 @@ exports.GetTopicForum = (req, res, next) => {
 };
 
 exports.GetUserName = (req, res, next) => {
-  // if (req.auth === false) {
-  //   res.status(200).json({ auth: false });
-  //   return;
-  // }
+  if (req.auth === false) {
+    res.status(200).json({ auth: false });
+    return;
+  }
+  if (req.query.userID.length !== 24) {
+    res.status(200).json({ fetch: false });
+    return;
+  }
 
   db.getDb()
     .db()
     .collection("User")
     .findOne({ _id: new mongodb.ObjectId(req.query.userID) })
     .then((resp) => {
-      res.status(200).json(resp);
+      if (!resp) {
+        res.status(200).json({ noData: true });
+      } else {
+        res.status(200).json(resp);
+      }
     })
     .catch(() => {
       res.status(200).json({ error: true });
@@ -118,6 +126,15 @@ exports.GetUserName = (req, res, next) => {
 };
 
 exports.AddNormalForum = (req, res, next) => {
+  if (req.auth === false) {
+    res.status(200).json({ auth: false });
+    return;
+  }
+  if (req.body===null){
+    res.status(200).json({ inValidReq: true });
+    return;
+
+  }
   db.getDb()
     .db()
     .collection("Material")
@@ -132,10 +149,15 @@ exports.AddNormalForum = (req, res, next) => {
       replies: [],
     })
     .then((resp) => {
-      res.status(200).json(resp);
+      if (resp.insertedId) {
+      res.status(200).json({added:true});
+      }
+      else{
+        res.status(200).json({ error: true });
+      }
     })
     .catch((er) => {
-      console.log(er);
+      res.status(200).json({ error: true });
     });
 };
 
@@ -163,6 +185,15 @@ exports.GetNormalForums = (req, res, next) => {
 };
 
 exports.AddReplyForum = (req, res, next) => {
+  if (req.auth === false) {
+    res.status(200).json({ auth: false });
+    return;
+  }
+  if (req.body===null){
+    res.status(200).json({ inValidReq: true });
+    return;
+
+  }
   db.getDb()
     .db()
     .collection("ReplyForums")
