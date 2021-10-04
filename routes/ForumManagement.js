@@ -24,4 +24,6 @@ router.post("/update_normalForum/",Forum.UpdateNormalForum);
 
 router.post("/update_replyForum/",Forum.UpdateReplyForum);
 
+router.post("/delete_replyForum",Forum.DeleteReplyForum);
+
 module.exports = router;
