@@ -51,14 +51,14 @@ exports.EnrollStatus = (req, res, next) => {
 };
 
 exports.GetEnroll = (req, res, next) => {
-  if (req.auth === false) {
-    res.status(200).json({ auth: false });
-    return;
-  }
+  // if (req.auth === false) {
+  //   res.status(200).json({ auth: false });
+  //   return;
+  // }
   db.getDb()
     .db()
     .collection("Enroll")
-    .findOne({ id: req.query.id })
+    .findOne({ id: req.query.id})
     .then((resp) => {
       if (resp) {
         const idArray = resp.students.map((row)=>{
