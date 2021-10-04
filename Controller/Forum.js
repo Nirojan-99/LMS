@@ -185,7 +185,11 @@ exports.GetNormalForums = (req, res, next) => {
     })
     .toArray()
     .then((resp) => {
+      if (!resp) {
+        res.status(200).json({ noData: true });
+      } else {
       res.status(200).json(resp);
+      }
     })
     .catch(() => {
       res.status(200).json({ error: true });
