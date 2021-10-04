@@ -333,3 +333,29 @@ exports.DeleteReplyForum = (req, res, next) => {
       res.status(200).json({ deleted: false });
     });
 };
+
+
+exports.DeleteNormalForum = (req, res, next) => {
+  if (req.auth === false) {
+    res.status(200).json({ auth: false });
+    return;
+  }
+  if (req.query._id.length !== 24) {
+    res.status(200).json({ fetch: false });
+    return;
+  }
+  db.getDb()
+    .db()
+    .collection("Material")
+    .deleteOne({ _id: new mongodb.ObjectId(req.query._id) })
+    .then((resp) => {
+      if (resp.deletedCount === 1) {
+        res.status(200).json({ deleted: true });
+      } else {
+        res.status(200).json({ deleted: false });
+      }
+    })
+    .catch(() => {
+      res.status(200).json({ deleted: false });
+    });
+};
