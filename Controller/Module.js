@@ -100,7 +100,6 @@ exports.UpdateModule = (req, res, next) => {
       res.status(200).json({ auth: false });
       return;
     }
-    console.log(req.body);
     db.getDb()
       .db()
       .collection("Module")
