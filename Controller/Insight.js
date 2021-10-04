@@ -17,21 +17,21 @@ exports.getInsight = (req, res, next) => {
     .findOne({ material_id: new mongodb.ObjectId(req.query.materialID) })
     .then((resp) => {
       if (resp) {
-        const insightName = "insight" + req.query.materialID + ".pdf";
-        const insightPath = path.join("Reports", "ModuleMaterial", insightName);
-        const PDFKit = new PDFDocument();
-        PDFKit.pipe(fs.createWriteStream(insightPath));
+        // const insightName = "insight" + req.query.materialID + ".pdf";
+        // const insightPath = path.join("Reports", "ModuleMaterial", insightName);
+        // const PDFKit = new PDFDocument();
+        // PDFKit.pipe(fs.createWriteStream(insightPath));
 
-        PDFKit.fillColor("red").fontSize(25).text("INSIGHTS");
-        PDFKit.text("\n");
-        resp.students.map((row) => {
-          const date = row.date_time.split("@");
-          PDFKit.fillColor("black")
-            .fontSize(12)
-            .text(row.student + " ----- " + date[0] + " ---- " + date[1]);
-          PDFKit.text("\n");
-        });
-        PDFKit.end();
+        // PDFKit.fillColor("red").fontSize(25).text("INSIGHTS");
+        // PDFKit.text("\n");
+        // resp.students.map((row) => {
+        //   const date = row.date_time.split("@");
+        //   PDFKit.fillColor("black")
+        //     .fontSize(12)
+        //     .text(row.student + " ----- " + date[0] + " ---- " + date[1]);
+        //   PDFKit.text("\n");
+        // });
+        // PDFKit.end();
       }
       res.status(200).json(resp);
     })
