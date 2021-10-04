@@ -1,6 +1,7 @@
 const mongodb = require("mongodb");
 const db = require("../db");
 
+//function for get Today Date
 const getTodayDate = () => {
   var today = new Date();
   var dd = today.getDate();
@@ -17,6 +18,7 @@ const getTodayDate = () => {
   return today;
 };
 
+//Get the moduleID of the week
 exports.GetModuleID = (req, res, next) => {
   // if (req.auth === false) {
   //   res.status(200).json({ auth: false });
@@ -34,6 +36,7 @@ exports.GetModuleID = (req, res, next) => {
     });
 };
 
+//Add TopForum
 exports.AddForum = (req, res, next) => {
   db.getDb()
     .db()
@@ -59,6 +62,7 @@ exports.AddForum = (req, res, next) => {
     });
 };
 
+//Get All Topics Forum
 exports.GetTopicForums = (req, res, next) => {
   // if (req.auth === false) {
   //   res.status(200).json({ auth: false });
@@ -81,6 +85,7 @@ exports.GetTopicForums = (req, res, next) => {
     });
 };
 
+//Get specific Topic Forum
 exports.GetTopicForum = (req, res, next) => {
   // if (req.auth === false) {
   //   res.status(200).json({ auth: false });
@@ -99,6 +104,7 @@ exports.GetTopicForum = (req, res, next) => {
     });
 };
 
+//Get the UserName who create Forum
 exports.GetUserName = (req, res, next) => {
   if (req.auth === false) {
     res.status(200).json({ auth: false });
@@ -125,6 +131,7 @@ exports.GetUserName = (req, res, next) => {
     });
 };
 
+//Add Normal Forum
 exports.AddNormalForum = (req, res, next) => {
   if (req.auth === false) {
     res.status(200).json({ auth: false });
@@ -161,6 +168,7 @@ exports.AddNormalForum = (req, res, next) => {
     });
 };
 
+//Get all NormalForums
 exports.GetNormalForums = (req, res, next) => {
   // if (req.auth === false) {
   //   res.status(200).json({ auth: false });
@@ -184,6 +192,7 @@ exports.GetNormalForums = (req, res, next) => {
     });
 };
 
+//Add Reply Forum
 exports.AddReplyForum = (req, res, next) => {
   if (req.auth === false) {
     res.status(200).json({ auth: false });
@@ -234,6 +243,7 @@ exports.AddReplyForum = (req, res, next) => {
     });
 };
 
+//Get Reply Forum
 exports.GetReplyForum = (req, res, next) => {
   // if (req.auth === false) {
   //   res.status(200).json({ auth: false });
@@ -256,6 +266,7 @@ exports.GetReplyForum = (req, res, next) => {
     });
 };
 
+//Update Normal Forum
 exports.UpdateNormalForum = (req, res, next) => {
   if (req.auth === false) {
     res.status(200).json({ auth: false });
@@ -289,6 +300,7 @@ exports.UpdateNormalForum = (req, res, next) => {
     });
 };
 
+//Update Reply Forum
 exports.UpdateReplyForum = (req, res, next) => {
   if (req.auth === false) {
     res.status(200).json({ auth: false });
@@ -322,6 +334,7 @@ exports.UpdateReplyForum = (req, res, next) => {
     });
 };
 
+//Delete Reply Forum
 exports.DeleteReplyForum = (req, res, next) => {
   if (req.auth === false) {
     res.status(200).json({ auth: false });
@@ -365,7 +378,7 @@ exports.DeleteReplyForum = (req, res, next) => {
     });
 };
 
-
+//Delete Normal Forum
 exports.DeleteNormalForum = (req, res, next) => {
   if (req.auth === false) {
     res.status(200).json({ auth: false });
