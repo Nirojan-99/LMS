@@ -82,7 +82,6 @@ exports.AddJob = (req, res, next) => {
                 jobPoster: link,
               })
               .then((resp) => {
-                console.log(resp);
                 if (resp.insertedId) {
                   res.status(200).json({ uploaded: true });
                 } else {

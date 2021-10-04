@@ -59,7 +59,6 @@ exports.AddForum = (req, res, next) => {
     });
 };
 
-
 exports.GetTopicForums = (req, res, next) => {
   // if (req.auth === false) {
   //   res.status(200).json({ auth: false });
@@ -68,7 +67,11 @@ exports.GetTopicForums = (req, res, next) => {
   db.getDb()
     .db()
     .collection("Material")
-    .find({ moduleID:req.query.moduleID, title:"TopForum",visibility:"visible"})
+    .find({
+      moduleID: req.query.moduleID,
+      title: "TopForum",
+      visibility: "visible",
+    })
     .toArray()
     .then((resp) => {
       res.status(200).json(resp);
@@ -83,7 +86,7 @@ exports.GetTopicForum = (req, res, next) => {
   //   res.status(200).json({ auth: false });
   //   return;
   // }
-  
+
   db.getDb()
     .db()
     .collection("Material")
@@ -101,7 +104,7 @@ exports.GetUserName = (req, res, next) => {
   //   res.status(200).json({ auth: false });
   //   return;
   // }
-  
+
   db.getDb()
     .db()
     .collection("User")
@@ -136,20 +139,22 @@ exports.AddNormalForum = (req, res, next) => {
     });
 };
 
-
 exports.GetNormalForums = (req, res, next) => {
   // if (req.auth === false) {
   //   res.status(200).json({ auth: false });
   //   return;
   // }
- 
+
   db.getDb()
     .db()
     .collection("Material")
-    .find({ moduleID:req.query.moduleID, title:"NormalForum",weekID:req.query.weekID})
+    .find({
+      moduleID: req.query.moduleID,
+      title: "NormalForum",
+      weekID: req.query.weekID,
+    })
     .toArray()
     .then((resp) => {
-     
       res.status(200).json(resp);
     })
     .catch(() => {
@@ -157,63 +162,200 @@ exports.GetNormalForums = (req, res, next) => {
     });
 };
 
-
 exports.AddReplyForum = (req, res, next) => {
   db.getDb()
     .db()
     .collection("ReplyForums")
     .insertOne({
       title: "ReplyForum",
-      parentNormalForumID:req.body.parentNormalForumID,
+      parentNormalForumID: req.body.parentNormalForumID,
       userID: req.body.userID,
       type: req.body.type,
       postedDate: getTodayDate(),
       msg: req.body.msg,
     })
     .then((res1) => {
-      if(res1.insertedId){
-        const replyForumID=res1.insertedId;
+      if (res1.insertedId) {
+        const replyForumID = res1.insertedId;
         db.getDb()
-        .db()
-        .collection("Material")
-        .updateOne(
-          {_id:mongodb.ObjectId(req.body.parentNormalForumID)},
-          {$push: {replies:replyForumID }}
-        )
-        .then((resp) => {
-          if (resp.modifiedCount === 1) {
-            res.status(200).json({ inserted: true });
-          } else {
+          .db()
+          .collection("Material")
+          .updateOne(
+            { _id: mongodb.ObjectId(req.body.parentNormalForumID) },
+            { $push: { replies: replyForumID } }
+          )
+          .then((resp) => {
+            if (resp.modifiedCount === 1) {
+              res.status(200).json({ inserted: true });
+            } else {
+              res.status(200).json({ inserted: false });
+            }
+          })
+          .catch(() => {
             res.status(200).json({ inserted: false });
-          }
-        })
-        .catch(() => {
-          res.status(200).json({ inserted: false });
-        });
-    } else {
+          });
+      } else {
+        res.status(200).json({ inserted: false });
+      }
+    })
+    .catch(() => {
       res.status(200).json({ inserted: false });
-    }
-  })
-  .catch(() => {
-    res.status(200).json({ inserted: false });
-  });
+    });
 };
-
 
 exports.GetReplyForum = (req, res, next) => {
   // if (req.auth === false) {
   //   res.status(200).json({ auth: false });
   //   return;
   // }
- console.log(req.query.replyForumID);
+  //  console.log(req.query.replyForumID);
   db.getDb()
     .db()
     .collection("ReplyForums")
-    .findOne({ _id:mongodb.ObjectId(req.query.replyForumID)})
+    .findOne({ _id: mongodb.ObjectId(req.query.replyForumID) })
     .then((resp) => {
-      res.status(200).json(resp);
+      if (!resp) {
+        res.status(200).json({ noData: true });
+      } else {
+        res.status(200).json(resp);
+      }
     })
     .catch(() => {
       res.status(200).json({ error: true });
+    });
+};
+
+exports.UpdateNormalForum = (req, res, next) => {
+  if (req.auth === false) {
+    res.status(200).json({ auth: false });
+    return;
+  }
+  if (req.body._id.length !== 24) {
+    res.status(200).json({ fetch: false });
+    return;
+  }
+
+  db.getDb()
+    .db()
+    .collection("Material")
+    .updateOne(
+      { _id: new mongodb.ObjectId(req.body._id) },
+      {
+        $set: {
+          msg: req.body.msg,
+        },
+      }
+    )
+    .then((resp) => {
+      if (resp.modifiedCount === 1) {
+        res.status(200).json({ updated: true });
+      } else {
+        res.status(200).json({ updated: false });
+      }
+    })
+    .catch((er) => {
+      res.status(200).json({ updated: false });
+    });
+};
+
+exports.UpdateReplyForum = (req, res, next) => {
+  if (req.auth === false) {
+    res.status(200).json({ auth: false });
+    return;
+  }
+  if (req.body._id.length !== 24) {
+    res.status(200).json({ fetch: false });
+    return;
+  }
+
+  db.getDb()
+    .db()
+    .collection("ReplyForums")
+    .updateOne(
+      { _id: new mongodb.ObjectId(req.body._id) },
+      {
+        $set: {
+          msg: req.body.msg,
+        },
+      }
+    )
+    .then((resp) => {
+      if (resp.modifiedCount === 1) {
+        res.status(200).json({ updated: true });
+      } else {
+        res.status(200).json({ updated: false });
+      }
+    })
+    .catch((er) => {
+      res.status(200).json({ updated: false });
+    });
+};
+
+exports.DeleteReplyForum = (req, res, next) => {
+  if (req.auth === false) {
+    res.status(200).json({ auth: false });
+    return;
+  }
+  if (req.body._id.length !== 24) {
+    res.status(200).json({ fetch: false });
+    return;
+  }
+  db.getDb()
+    .db()
+    .collection("ReplyForums")
+    .deleteOne({ _id: new mongodb.ObjectId(req.body._id) })
+    .then((resp) => {
+      if (resp.deletedCount === 1) {
+        db.getDb()
+          .db()
+          .collection("Material")
+          .updateOne(
+            { _id: new mongodb.ObjectId(req.body.parentNormalForumID) },
+            { $pull: { replies: new mongodb.ObjectId(req.body._id) } }
+          )
+          .then((resp2) => {
+            if (resp2.modifiedCount === 1) {
+              res.status(200).json({ deleted: true });
+            } else {
+              res.status(200).json({ deleted: false });
+            }
+          })
+          .catch(() => {
+            res.status(200).json({ deleted: false });
+          });
+
+        // res.status(200).json({ deleted: true });
+      } else {
+        res.status(200).json({ deleted: false });
+      }
+    })
+    .catch(() => {
+      res.status(200).json({ deleted: false });
+    });
+};
+
+
+exports.DeleteNormalForum = (req, res, next) => {
+  if (req.auth === false) {
+    res.status(200).json({ auth: false });
+    return;
+  }
+  if (req.query._id.length !== 24) {
+    res.status(200).json({ fetch: false });
+    return;
+  }
+  db.getDb()
+    .db()
+    .collection("Material")
+    .deleteOne({ _id: new mongodb.ObjectId(req.query._id) })
+    .then((resp) => {
+      if (resp.deletedCount === 1) {
+        res.status(200).json({ deleted: true });
+      } else {
+        res.status(200).json({ deleted: false });
+      }
+    })
+    .catch(() => {
+      res.status(200).json({ deleted: false });
     });
 };
