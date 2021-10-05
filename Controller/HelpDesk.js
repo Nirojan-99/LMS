@@ -3,6 +3,20 @@ const db = require("../db");
 const nodemailer=require('nodemailer');
 
 
+
+// const sendEmail = (otp,email) => {
+//   const h1 = "<h2>OTP for reset password</h2><hr>";
+//   const h2 = h1 + "<h3>OTP: " + otp + "</h3>";
+
+//   var transporter = nodemailer.createTransport({
+//     service: "gmail",
+//     auth: {
+//       user: "project2020sliit@gmail.com",
+//       pass: "sliit2020",
+//     },
+//   });
+
+
 const sendEmail = (otp,email) => {
   const h1 = "<h2>OTP for reset password</h2><hr>";
   const h2 = h1 + "<h3>OTP: " + otp + "</h3>";
@@ -94,16 +108,16 @@ exports.DeleteTicket = (req, res, next) => {
 exports.SendReply = (req, res, next) => {
   res.status(200).json({ done: true });
 
-  //delete the ticket and send reply as mail
+  
 
-  // db.getDb()
-  //   .db()
-  //   .collection("Tickets")
-  //   .findOne({ _id: new mongodb.ObjectId(req.query.ticketID) })
-  //   .then((resp) => {
-  //     res.status(200).json(resp);
-  //   })
-  //   .catch((er) => {
-  //     console.log(er);
-  //   });
+  db.getDb()
+    .db()
+    .collection("Tickets")
+    .deleteOne({ _id: new mongodb.ObjectId(req.query.ticketID) })
+    .then((resp) => {
+      res.status(200).json({});
+    })
+    .catch((er) => {
+      console.log(er);
+    });
 };
