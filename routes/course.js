@@ -6,7 +6,7 @@ router.get("/getcourse/", Course.GetCourse);
 
 router.post("/addcourse", Course.AddCourse);
 
-router.post("/Updatecourse", Course.UpdateCourse);
+router.put("/Updatecourse", Course.UpdateCourse);
 
 router.delete("/delete_course/", Course.DeleteCourse);
 

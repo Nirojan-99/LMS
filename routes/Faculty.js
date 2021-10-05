@@ -8,7 +8,7 @@ router.get("/get_faculties", Faculty.GetFaculties);
 
 router.post("/addFaculty", Faculty.AddFaculty);
 
-router.post("/UpdateFaculty", Faculty.UpdateFaculty);
+router.put("/UpdateFaculty", Faculty.UpdateFaculty);
 
 router.delete("/delete_faculty/", Faculty.DeleteFaculty);
 

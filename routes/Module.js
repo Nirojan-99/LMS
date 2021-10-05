@@ -8,7 +8,7 @@ router.get("/get_Modules/", Module.GetModules);
 
 router.post("/addModule", Module.AddModule);
 
-router.post("/UpdateModule", Module.UpdateModule);
+router.put("/UpdateModule", Module.UpdateModule);
 
 router.delete("/delete_Module/", Module.DeleteModule);
 
