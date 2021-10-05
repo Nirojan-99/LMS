@@ -5,7 +5,7 @@ const nodemailer=require('nodemailer');
 let newIDNo;
 let newID;
 
-
+//function for generate password for user Registeration
 function generatePassword() {
   var length = 8,
     charset =
@@ -17,7 +17,7 @@ function generatePassword() {
   return retVal;
 }
 
-
+//function for sendEmail to the User
 function sendEmail(email,pwd){
   const h1="<h2>Login Details for LMS</h2><hr>"
   const h2=h1+"<h3>UserName: " + email + "<br>Password: "+pwd +"</h3>"
@@ -51,7 +51,7 @@ function sendEmail(email,pwd){
 }
 
 
-
+//get the LMS last ID
 exports.GetUserID = (req, res, next) => {
   if (req.auth === false) {
     res.status(200).json({ auth: false });
@@ -74,11 +74,16 @@ exports.GetUserID = (req, res, next) => {
     });
 };
 
+//Add the User
 exports.AddUser = (req, res, next) => {
   const emailIDtoSend= req.body.email;
   let password;
   if (req.auth === false) {
     res.status(200).json({ auth: false });
+    return;
+  }
+  if(req.body===null){
+    res.status(200).json({ inValidReq: true });
     return;
   }
   db.getDb()
@@ -128,6 +133,7 @@ exports.AddUser = (req, res, next) => {
     });
 };
 
+//Get all the Users From System
 exports.GetUsers = (req, res, next) => {
   if (req.auth === false) {
     res.status(200).json({ auth: false });
@@ -151,6 +157,7 @@ exports.GetUsers = (req, res, next) => {
     });
 };
 
+//Get the all details of a User to edit
 exports.EditUser = (req, res, next) => {
   if (req.auth === false) {
     res.status(200).json({ auth: false });
@@ -176,6 +183,7 @@ exports.EditUser = (req, res, next) => {
     });
 };
 
+//Update the User Details
 exports.UpdateUser = (req, res, next) => {
   if (req.auth === false) {
     res.status(200).json({ auth: false });
@@ -215,19 +223,20 @@ exports.UpdateUser = (req, res, next) => {
     });
 };
 
+//Delete the User
 exports.DeleteUser = (req, res, next) => {
   if (req.auth === false) {
     res.status(200).json({ auth: false });
     return;
   }
-  if (req.body._id.length !== 24) {
+  if (req.query._id.length !== 24) {
     res.status(200).json({ fetch: false });
     return;
   }
   db.getDb()
     .db()
     .collection("User")
-    .deleteOne({ _id: new mongodb.ObjectId(req.body._id) })
+    .deleteOne({ _id: new mongodb.ObjectId(req.query._id) })
     .then((resp) => {
       if (resp.deletedCount === 1) {
         res.status(200).json({ deleted: true });

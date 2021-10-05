@@ -13,8 +13,8 @@ router.get("/get_users/",UserManagement.GetUsers);
 
 router.get("/edit_user/",UserManagement.EditUser);
 
-router.post("/update_user/",UserManagement.UpdateUser);
+router.put("/update_user/",UserManagement.UpdateUser);
 
-router.post("/delete_user/",UserManagement.DeleteUser);
+router.delete("/delete_user/",UserManagement.DeleteUser);
 
 module.exports = router;

@@ -20,9 +20,9 @@ router.post("/add_replyForum/",Forum.AddReplyForum);
 
 router.get("/get_replyForum/",Forum.GetReplyForum);
 
-router.post("/update_normalForum/",Forum.UpdateNormalForum);
+router.put("/update_normalForum/",Forum.UpdateNormalForum);
 
-router.post("/update_replyForum/",Forum.UpdateReplyForum);
+router.put("/update_replyForum/",Forum.UpdateReplyForum);
 
 router.post("/delete_replyForum",Forum.DeleteReplyForum);
 
