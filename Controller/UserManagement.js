@@ -77,7 +77,12 @@ exports.AddUser = (req, res, next) => {
     res.status(200).json({ auth: false });
     return;
   }
-  if (req.body === null) {
+  if (
+    req.body === null ||
+    req.body.email === null ||
+    req.body.contact === null ||
+    req.body.userIdNo === null
+  ) {
     res.status(200).json({ inValidReq: true });
     return;
   }
